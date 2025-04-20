@@ -23,4 +23,10 @@
   </ItemGroup>
 
 
+  <ItemGroup>
+    <Folder Include="Featuers\" />
+    <Folder Include="Mapping\" />
+  </ItemGroup>
+
+
 </Project>

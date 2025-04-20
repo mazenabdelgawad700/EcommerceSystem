@@ -14,4 +14,8 @@
     <ProjectReference Include="..\Ecommerce.Shared\Ecommerce.Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Abstracts\" />
+  </ItemGroup>
+
 </Project>

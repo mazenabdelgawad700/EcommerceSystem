@@ -16,5 +16,10 @@
     <PackageReference Include="MailKit" Version="4.9.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Abstraction\" />
+    <Folder Include="Implementation\" />
+  </ItemGroup>
+
 
 </Project>

@@ -1,4 +1,6 @@
+using Ecommerce.Core;
 using Ecommerce.Domain.Entities;
+using Ecommerce.Infrastructure;
 using Ecommerce.Infrastructure.Context;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -80,6 +82,12 @@ namespace Ecommerce.API
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+
+            // Register To DI
+            builder.Services
+                .AddInfrastructureDependencies()
+                .AddServiceDependencies()
+                .AddCoreDependencies();
 
             var app = builder.Build();
 
