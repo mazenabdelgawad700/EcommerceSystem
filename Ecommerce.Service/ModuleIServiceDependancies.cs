@@ -9,6 +9,8 @@ namespace Ecommerce.Infrastructure
         public static IServiceCollection AddServiceDependencies(this IServiceCollection services)
         {
             services.AddTransient<IApplicationUserService, ApplicationUserService>();
+            services.AddTransient<ISendEmailService, SendEmailService>();
+            services.AddTransient<IConfirmEmailService, ConfirmEmailService>();
             return services;
         }
     }

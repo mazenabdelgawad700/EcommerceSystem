@@ -9,9 +9,12 @@ namespace Ecommerce.Service.Implementation
     internal class ApplicationUserService : ReturnBaseHandler, IApplicationUserService
     {
         private readonly UserManager<ApplicationUser> _userManager;
-        public ApplicationUserService(UserManager<ApplicationUser> userManager)
+        private readonly IConfirmEmailService _confirmEmailService;
+
+        public ApplicationUserService(UserManager<ApplicationUser> userManager, IConfirmEmailService confirmEmailService)
         {
             this._userManager = userManager;
+            _confirmEmailService = confirmEmailService;
         }
         private bool ValidatePassword(string password)
         {
@@ -64,8 +67,12 @@ namespace Ecommerce.Service.Implementation
 
                 if (addUserResult.Succeeded)
                 {
-                    // Send Confirmatin Email
-                    return Success(true, "User Registerd Successfully, Please log in");
+                    ReturnBase<bool> sendConfirmationEmailResult = await _confirmEmailService.SendConfirmationEmailAsync(user);
+
+                    while (!sendConfirmationEmailResult.Succeeded)
+                        sendConfirmationEmailResult = await _confirmEmailService.SendConfirmationEmailAsync(user);
+
+                    return Success(true, $"User Registerd Successfully, Please confirm your email by the email sent to {user.Email}");
                 }
 
                 if (addUserResult.Errors.FirstOrDefault() is not null)

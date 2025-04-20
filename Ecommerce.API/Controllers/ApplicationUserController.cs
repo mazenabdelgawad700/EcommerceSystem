@@ -14,5 +14,12 @@ namespace Ecommerce.API.Controllers
             ReturnBase<bool> response = await Mediator.Send(command);
             return ReturnResult(response);
         }
+        [HttpGet]
+        public async Task<IActionResult> ConfirmEmail([FromQuery] ConfirmEmailCommand command)
+        {
+            ReturnBase<bool> response = await Mediator.Send(command);
+            return ReturnResult(response);
+        }
+
     }
 }

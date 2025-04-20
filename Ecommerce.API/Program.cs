@@ -1,6 +1,7 @@
 using Ecommerce.Core;
 using Ecommerce.Core.MiddelWare;
 using Ecommerce.Domain.Entities;
+using Ecommerce.Domain.Helpers;
 using Ecommerce.Infrastructure;
 using Ecommerce.Infrastructure.Context;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -17,30 +18,25 @@ namespace Ecommerce.API
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // 1. Add EF Core with SQL Server
             builder.Services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-            // 2. Add ASP.NET Core Identity with roles
             builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<AppDbContext>()
                 .AddDefaultTokenProviders();
 
             builder.Services.Configure<IdentityOptions>(options =>
             {
-                // Password settings (relaxed for demo purposes)
                 options.Password.RequireDigit = true;
                 options.Password.RequireLowercase = true;
                 options.Password.RequireUppercase = true;
                 options.Password.RequireNonAlphanumeric = true;
                 options.Password.RequiredLength = 8;
 
-                // Lockout settings
                 options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
                 options.Lockout.MaxFailedAccessAttempts = 5;
                 options.Lockout.AllowedForNewUsers = true;
 
-                // User settings
                 options.User.RequireUniqueEmail = true;
             });
 
@@ -63,20 +59,16 @@ namespace Ecommerce.API
                     ValidIssuer = jwtSettings["Issuer"],
                     ValidAudience = jwtSettings["Audience"],
                     IssuerSigningKey = new SymmetricSecurityKey(key),
-                    ClockSkew = TimeSpan.Zero // No clock skew for precise token expiration
+                    ClockSkew = TimeSpan.Zero
                 };
             });
 
 
-            // 5. Add Authorization with role-based policies
-            builder.Services.AddAuthorization(options =>
-            {
-                options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
-                options.AddPolicy("UserOnly", policy => policy.RequireRole("User"));
-                options.AddPolicy("AdminOrUser", policy => policy.RequireRole("Admin", "User"));
-            });
+            builder.Services.AddAuthorizationBuilder()
+                    .AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"))
+                    .AddPolicy("UserOnly", policy => policy.RequireRole("User"))
+                    .AddPolicy("AdminOrUser", policy => policy.RequireRole("Admin", "User"));
 
-            // 6. Register services for JWT and refresh token handling
             builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
             //builder.Services.AddScoped<JwtTokenService>(); // You'll create this service
 
@@ -103,6 +95,11 @@ namespace Ecommerce.API
             });
             #endregion
 
+
+            var emailSettings = new EmailSettings();
+            builder.Configuration.GetSection(nameof(emailSettings)).Bind(emailSettings);
+            builder.Services.AddSingleton(emailSettings);
+
             var app = builder.Build();
 
             if (app.Environment.IsDevelopment())
@@ -123,8 +120,6 @@ namespace Ecommerce.API
 
             app.MapControllers();
 
-
-            // Seed roles
             using (var scope = app.Services.CreateScope())
             {
                 var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
@@ -136,6 +131,7 @@ namespace Ecommerce.API
                         await roleManager.CreateAsync(new IdentityRole(roleName));
                     }
                 }
+                scope.Dispose();
             }
 
 
