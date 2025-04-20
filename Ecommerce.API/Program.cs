@@ -1,4 +1,5 @@
 using Ecommerce.Core;
+using Ecommerce.Core.MiddelWare;
 using Ecommerce.Domain.Entities;
 using Ecommerce.Infrastructure;
 using Ecommerce.Infrastructure.Context;
@@ -89,6 +90,19 @@ namespace Ecommerce.API
                 .AddServiceDependencies()
                 .AddCoreDependencies();
 
+            #region AllowCors
+            string CORS = "_cors";
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy(name: CORS, policy =>
+                {
+                    policy.AllowAnyHeader();
+                    policy.AllowAnyMethod();
+                    policy.AllowAnyOrigin();
+                });
+            });
+            #endregion
+
             var app = builder.Build();
 
             if (app.Environment.IsDevelopment())
@@ -97,7 +111,11 @@ namespace Ecommerce.API
                 app.UseSwaggerUI();
             }
 
+            app.UseMiddleware<ErrorHandlerMiddleware>();
+
             app.UseHttpsRedirection();
+
+            app.UseCors(CORS);
 
             app.UseAuthentication();
             app.UseAuthorization();

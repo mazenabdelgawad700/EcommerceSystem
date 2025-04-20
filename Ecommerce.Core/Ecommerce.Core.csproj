@@ -24,8 +24,7 @@
 
 
   <ItemGroup>
-    <Folder Include="Featuers\" />
-    <Folder Include="Mapping\" />
+    <Folder Include="Featuers\ApplicationUserFeatuer\Query\" />
   </ItemGroup>
 
 

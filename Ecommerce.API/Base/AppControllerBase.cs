@@ -12,7 +12,7 @@ namespace Ecommerce.API.Base
         protected IMediator Mediator => _mediatorInstance ??= HttpContext.RequestServices.GetService<IMediator>();
 
         #region Actions
-        public ObjectResult NewResult<T>(ReturnBase<T> response)
+        public ObjectResult ReturnResult<T>(ReturnBase<T> response)
         {
             switch (response.StatusCode)
             {
