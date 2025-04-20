@@ -123,17 +123,19 @@ namespace Ecommerce.API
             using (var scope = app.Services.CreateScope())
             {
                 var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-                string[] roleNames = { "Admin", "User" };
-                foreach (var roleName in roleNames)
+                string[] roleNames = { "Admin", "Buyer", "Seller" };
+                if (!roleManager.Roles.Any())
                 {
-                    if (!await roleManager.RoleExistsAsync(roleName))
+                    foreach (var roleName in roleNames)
                     {
-                        await roleManager.CreateAsync(new IdentityRole(roleName));
+                        if (!await roleManager.RoleExistsAsync(roleName))
+                        {
+                            await roleManager.CreateAsync(new IdentityRole(roleName));
+                        }
                     }
                 }
                 scope.Dispose();
             }
-
 
             app.Run();
         }

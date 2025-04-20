@@ -26,7 +26,7 @@ namespace Ecommerce.Core.Featuers.ApplicationUserFeatuer.Command.Handler
             {
                 var mappedResult = _mapper.Map<ApplicationUser>(request);
 
-                var addUserResult = await _applicationUserService.RegisterApplicationUserAsync(mappedResult, request.Password);
+                var addUserResult = await _applicationUserService.RegisterApplicationUserAsync(mappedResult, request.Password, request.Role);
 
                 if (!addUserResult.Succeeded)
                     return Failed<bool>(addUserResult.Message);

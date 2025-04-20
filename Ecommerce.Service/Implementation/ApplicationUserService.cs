@@ -1,6 +1,7 @@
 ﻿using Ecommerce.Domain.Entities;
 using Ecommerce.Service.Abstraction;
 using Ecommerce.Shared.Base;
+using Ecommerce.Shared.Enums;
 using Microsoft.AspNetCore.Identity;
 using System.Text.RegularExpressions;
 
@@ -30,7 +31,7 @@ namespace Ecommerce.Service.Implementation
         {
             return email.Substring(0, email.IndexOf("@"));
         }
-        public async Task<ReturnBase<bool>> RegisterApplicationUserAsync(ApplicationUser user, string password)
+        public async Task<ReturnBase<bool>> RegisterApplicationUserAsync(ApplicationUser user, string password, UserRole role)
         {
             try
             {
@@ -60,7 +61,7 @@ namespace Ecommerce.Service.Implementation
                     user.Role = "Admin";
 
                 else
-                    user.Role = "User";
+                    user.Role = role.ToString();
 
                 var addUserResult = await _userManager.CreateAsync(user, password);
 
