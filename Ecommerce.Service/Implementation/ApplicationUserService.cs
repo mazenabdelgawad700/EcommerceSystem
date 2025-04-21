@@ -82,9 +82,10 @@ namespace Ecommerce.Service.Implementation
 
                 user.Id = Guid.NewGuid().ToString();
 
-                await _userManager.AddToRoleAsync(user, role.ToString());
-
                 var addUserResult = await _userManager.CreateAsync(user, password);
+                if (addUserResult.Succeeded)
+                    await _userManager.AddToRoleAsync(user, role.ToString());
+
 
 
                 if (addUserResult.Succeeded)

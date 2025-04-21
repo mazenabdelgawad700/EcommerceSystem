@@ -18,7 +18,8 @@ namespace Ecommerce.Infrastructure.Configurations
                 .HasPrecision(10, 2);
 
             builder.Property(t => t.Status)
-                .IsRequired();
+                .IsRequired()
+                .HasConversion<string>();
 
             builder.Property(t => t.TransactionDate)
                 .IsRequired();

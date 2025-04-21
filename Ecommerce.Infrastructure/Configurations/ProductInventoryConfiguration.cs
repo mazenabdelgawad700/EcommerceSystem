@@ -9,7 +9,7 @@ namespace Ecommerce.Infrastructure.Configurations
         public void Configure(EntityTypeBuilder<ProductInventory> builder)
         {
             // Composite primary key
-            builder.HasKey(pi => new { pi.ProductId, pi.InventoryId });
+            builder.HasKey(pi => pi.Id);
 
             // Many-to-one relationship with Product
             builder.HasOne(pi => pi.Product)

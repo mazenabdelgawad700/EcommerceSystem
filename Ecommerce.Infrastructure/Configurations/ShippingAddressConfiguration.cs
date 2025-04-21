@@ -28,7 +28,8 @@ namespace Ecommerce.Infrastructure.Configurations
                 .HasMaxLength(100);
 
             builder.Property(sa => sa.Status)
-                .IsRequired();
+                .IsRequired()
+                .HasConversion<string>();
 
             builder.Property(sa => sa.City)
                 .IsRequired()

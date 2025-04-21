@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Ecommerce.Infrastructure.Abstracts;
+using Ecommerce.Infrastructure.Repositories;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Ecommerce.Infrastructure
 {
@@ -6,6 +8,8 @@ namespace Ecommerce.Infrastructure
     {
         public static IServiceCollection AddInfrastructureDependencies(this IServiceCollection services)
         {
+            services.AddTransient<IProductRepository, ProductRepository>();
+            services.AddTransient<IProductImageRepository, ProductImageRepository>();
             return services;
         }
     }

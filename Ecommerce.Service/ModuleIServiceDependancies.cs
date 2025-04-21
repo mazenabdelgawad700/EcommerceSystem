@@ -12,6 +12,8 @@ namespace Ecommerce.Infrastructure
             services.AddTransient<ISendEmailService, SendEmailService>();
             services.AddTransient<IConfirmEmailService, ConfirmEmailService>();
             services.AddTransient<ISendPasswordChangeNotificationEmailService, SendPasswordChangeNotificationEmailService>();
+            services.AddTransient<IProductService, ProductService>();
+            services.AddTransient<IImageService, ImageService>();
             return services;
         }
     }

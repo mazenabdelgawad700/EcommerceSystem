@@ -31,7 +31,8 @@ namespace Ecommerce.Infrastructure.Configurations
                 .IsRequired();
 
             builder.Property(p => p.Status)
-                .IsRequired();
+                .IsRequired()
+                .HasConversion<string>();
 
             builder.Property(p => p.CreatedAt)
                 .IsRequired();
