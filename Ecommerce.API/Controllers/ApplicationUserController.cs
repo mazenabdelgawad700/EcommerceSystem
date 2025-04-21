@@ -28,13 +28,22 @@ namespace Ecommerce.API.Controllers
             ReturnBase<string> response = await Mediator.Send(command);
             return ReturnResult(response);
         }
-        //[HttpPost]
-        //[Authorize]
-        //public async Task<IActionResult> ChangePassword([FromBody] ResetPasswordCommand command)
-        //{
-        //    ReturnBase<bool> response = await Mediator.Send(command);
-        //    return ReturnResult(response);
-        //}
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordCommand command)
+        {
+            string? userIdFromToken = User.FindFirst("UserId")?.Value;
+
+            if (userIdFromToken is null)
+                return Unauthorized("Invalid Token");
+
+            if (command.UserId != userIdFromToken)
+                return Unauthorized("You are not allowed to perform this action");
+
+            ReturnBase<bool> response = await Mediator.Send(command);
+
+            return ReturnResult(response);
+        }
 
         [HttpPost]
         public async Task<IActionResult> ResetPasswordEmail([FromBody] SendResetPasswordEmailCommand command)

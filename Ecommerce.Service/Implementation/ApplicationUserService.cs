@@ -7,6 +7,7 @@ using Ecommerce.Shared.Enums;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Net;
@@ -25,14 +26,22 @@ namespace Ecommerce.Service.Implementation
         private readonly JwtSettings _jwtSettings;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly ISendEmailService _emailService;
-        public ApplicationUserService(UserManager<ApplicationUser> userManager, IConfirmEmailService confirmEmailService, JwtSettings jwtSettings, AppDbContext dbContext, IHttpContextAccessor httpContextAccessor, ISendEmailService emailService)
+        private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly ISendPasswordChangeNotificationEmailService
+           _sendPasswordChangeNotificationEmailService;
+
+
+        public ApplicationUserService(UserManager<ApplicationUser> userManager, IConfirmEmailService confirmEmailService, JwtSettings jwtSettings, AppDbContext dbContext, IHttpContextAccessor httpContextAccessor, ISendEmailService emailService, SignInManager<ApplicationUser> signInManager, ISendPasswordChangeNotificationEmailService
+           sendPasswordChangeNotificationEmailService)
         {
             this._userManager = userManager;
             this._confirmEmailService = confirmEmailService;
             this._jwtSettings = jwtSettings;
             this._dbContext = dbContext;
-            _httpContextAccessor = httpContextAccessor;
-            _emailService = emailService;
+            this._httpContextAccessor = httpContextAccessor;
+            this._emailService = emailService;
+            this._signInManager = signInManager;
+            this._sendPasswordChangeNotificationEmailService = sendPasswordChangeNotificationEmailService;
         }
         private bool ValidatePassword(string password)
         {
@@ -356,6 +365,45 @@ namespace Ecommerce.Service.Implementation
             }
             catch (Exception ex)
             {
+                return Failed<bool>(ex.Message);
+            }
+        }
+        public async Task<ReturnBase<bool>> ChangePasswordAsync(string userId, string currentPassword, string newPassword)
+        {
+            IDbContextTransaction transaction = await _dbContext.Database.BeginTransactionAsync();
+            try
+            {
+                if (string.IsNullOrEmpty(newPassword) || string.IsNullOrEmpty(currentPassword))
+                    return Failed<bool>("New and Current Passwords Are Required");
+
+                ApplicationUser? user = await _userManager.FindByIdAsync(userId);
+                if (user is null)
+                {
+                    return Failed<bool>("Invalid User Id");
+                }
+
+                IdentityResult changePasswordResult = await _userManager.ChangePasswordAsync(user, currentPassword, newPassword);
+
+                if (changePasswordResult.Succeeded)
+                {
+                    var sendEmailResult = await _sendPasswordChangeNotificationEmailService.SendPasswordChangeNotificationAsync(user);
+                    if (!sendEmailResult.Succeeded)
+                    {
+                        await transaction.RollbackAsync();
+                        return Failed<bool>("Failed To Send Change Password Email");
+                    }
+
+                    await _signInManager.SignOutAsync();
+                    await transaction.CommitAsync();
+                    return Success(true, "Password has been changed successfully");
+                }
+
+                await transaction.RollbackAsync();
+                return Failed<bool>("Failed To Change Password");
+            }
+            catch (Exception ex)
+            {
+                await transaction.RollbackAsync();
                 return Failed<bool>(ex.Message);
             }
         }
