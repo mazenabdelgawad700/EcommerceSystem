@@ -13,15 +13,17 @@ namespace Ecommerce.Core.Featuers.ProductFeatuer.Command.Handler
     {
 
         private readonly IProductService _productService;
+        private readonly IProductInventoryService _productInventoryService;
         private readonly IProductRepository _productRepository;
         private readonly IMapper _mapper;
 
 
-        public ProductCommandHandler(IProductService productService, IMapper mapper, IProductRepository productRepository)
+        public ProductCommandHandler(IProductService productService, IMapper mapper, IProductRepository productRepository, IProductInventoryService productInventoryService)
         {
             this._productService = productService;
             this._mapper = mapper;
             this._productRepository = productRepository;
+            _productInventoryService = productInventoryService;
         }
 
         public async Task<ReturnBase<bool>> Handle(AddProductCommand request, CancellationToken cancellationToken)
@@ -46,7 +48,14 @@ namespace Ecommerce.Core.Featuers.ProductFeatuer.Command.Handler
                     return Failed<bool>("Failed To Save Product Images, pleast try again");
                 }
 
-                // Add to product inventory table
+                var saveToInventoryResult = await _productInventoryService.AddProductInventoryEntity(addProduct.Data, 1);
+
+                if (!saveToInventoryResult.Succeeded)
+                {
+                    await transaction.RollbackAsync();
+                    return Failed<bool>(saveToInventoryResult.Message);
+                }
+
 
                 await transaction.CommitAsync();
                 return Success(true, addProduct.Message);

@@ -10,6 +10,7 @@ namespace Ecommerce.Infrastructure
         {
             services.AddTransient<IProductRepository, ProductRepository>();
             services.AddTransient<IProductImageRepository, ProductImageRepository>();
+            services.AddTransient<IProductInventoryRepository, ProductInventoryRepository>();
             return services;
         }
     }
