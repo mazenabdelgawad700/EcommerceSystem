@@ -7,7 +7,11 @@ using MediatR;
 
 namespace Ecommerce.Core.Featuers.ApplicationUserFeatuer.Command.Handler
 {
-    public class ApplicationUserCommandHandler : ReturnBaseHandler, IRequestHandler<RegisterApplicationUserCommand, ReturnBase<bool>>, IRequestHandler<ConfirmEmailCommand, ReturnBase<bool>>
+    public class ApplicationUserCommandHandler : ReturnBaseHandler,
+        IRequestHandler<RegisterApplicationUserCommand, ReturnBase<bool>>,
+        IRequestHandler<ConfirmEmailCommand, ReturnBase<bool>>,
+        IRequestHandler<LoginApplicationUserCommand, ReturnBase<string>>,
+        IRequestHandler<RefreshTokenCommand, ReturnBase<string>>
     {
         private readonly IApplicationUserService _applicationUserService;
         private readonly IConfirmEmailService _confirmEmailService;
@@ -55,6 +59,37 @@ namespace Ecommerce.Core.Featuers.ApplicationUserFeatuer.Command.Handler
                 return Failed<bool>(ex.Message);
             }
         }
+        public async Task<ReturnBase<string>> Handle(LoginApplicationUserCommand request, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var loginResult = await _applicationUserService.LoginAsync(request.Email, request.Password);
 
+                if (!loginResult.Succeeded)
+                    return Failed<string>(loginResult.Message);
+
+                return Success(loginResult.Data, loginResult.Message);
+            }
+            catch (Exception ex)
+            {
+                return Failed<string>(ex.Message);
+            }
+        }
+        public async Task<ReturnBase<string>> Handle(RefreshTokenCommand request, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var refreshTokenResult = await _applicationUserService.RefreshTokenAsync(request.AccessToken);
+
+                if (!refreshTokenResult.Succeeded)
+                    return Failed<string>(refreshTokenResult.Message);
+
+                return Success(refreshTokenResult.Data, refreshTokenResult.Message);
+            }
+            catch (Exception ex)
+            {
+                return Failed<string>(ex.Message);
+            }
+        }
     }
 }

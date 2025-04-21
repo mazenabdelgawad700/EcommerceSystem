@@ -10,9 +10,6 @@ namespace Ecommerce.Infrastructure.Configurations
         {
             // Base configuration is handled by IdentityDbContext
 
-            builder.Property(u => u.Role)
-            .IsRequired();
-
             // One-to-one relationship with Cart
             builder.HasOne(u => u.Cart)
                 .WithOne()
