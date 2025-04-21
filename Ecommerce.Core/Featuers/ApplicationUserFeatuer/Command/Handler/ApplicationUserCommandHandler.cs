@@ -14,7 +14,8 @@ namespace Ecommerce.Core.Featuers.ApplicationUserFeatuer.Command.Handler
         IRequestHandler<RefreshTokenCommand, ReturnBase<string>>,
         IRequestHandler<ResetPasswordCommand, ReturnBase<bool>>,
         IRequestHandler<SendResetPasswordEmailCommand, ReturnBase<bool>>,
-        IRequestHandler<ChangePasswordCommand, ReturnBase<bool>>
+        IRequestHandler<ChangePasswordCommand, ReturnBase<bool>>,
+        IRequestHandler<UpdateApplicationUserCommand, ReturnBase<bool>>
     {
         private readonly IApplicationUserService _applicationUserService;
         private readonly IConfirmEmailService _confirmEmailService;
@@ -137,6 +138,22 @@ namespace Ecommerce.Core.Featuers.ApplicationUserFeatuer.Command.Handler
                     return Failed<bool>(changePasswordResult.Message);
 
                 return Success(changePasswordResult.Data, changePasswordResult.Message);
+            }
+            catch (Exception ex)
+            {
+                return Failed<bool>(ex.Message);
+            }
+        }
+        public async Task<ReturnBase<bool>> Handle(UpdateApplicationUserCommand request, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var updateResult = await _applicationUserService.UpdateApplicationUserAsync(request.UserId, request.NewEmail);
+
+                if (!updateResult.Succeeded)
+                    return Failed<bool>(updateResult.Message);
+
+                return Success(updateResult.Data, updateResult.Message);
             }
             catch (Exception ex)
             {

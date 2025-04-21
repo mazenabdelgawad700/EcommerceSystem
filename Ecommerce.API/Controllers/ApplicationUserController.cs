@@ -66,5 +66,20 @@ namespace Ecommerce.API.Controllers
             return ReturnResult(response);
         }
 
+        [HttpPut]
+        public async Task<IActionResult> Update([FromBody] UpdateApplicationUserCommand command)
+        {
+            string? userIdFromToken = User.FindFirst("UserId")?.Value;
+
+            if (userIdFromToken is null)
+                return Unauthorized("Invalid Token");
+
+            if (command.UserId != userIdFromToken)
+                return Unauthorized("You are not allowed to perform this action");
+
+            ReturnBase<bool> response = await Mediator.Send(command);
+            return ReturnResult(response);
+        }
+
     }
 }

@@ -407,5 +407,43 @@ namespace Ecommerce.Service.Implementation
                 return Failed<bool>(ex.Message);
             }
         }
+        public async Task<ReturnBase<bool>> UpdateApplicationUserAsync(string userId, string newEmail)
+        {
+            try
+            {
+                var user = await _userManager.FindByIdAsync(userId);
+
+                if (user is null)
+                    return Failed<bool>("User Not Found");
+
+                if (!ValidateEmailAddress(newEmail))
+                    return BadRequest<bool>("Please, enter a valid email address");
+
+                var isEmailExist = await _userManager.FindByEmailAsync(newEmail);
+
+                if (isEmailExist is not null)
+                    return BadRequest<bool>("Email address already used");
+
+                user.Email = newEmail;
+                user.NormalizedEmail = newEmail.ToUpper();
+                user.UserName = ExtractUserNameFromEmail(newEmail);
+                user.NormalizedUserName = user.UserName.ToUpper();
+                user.EmailConfirmed = false;
+
+                await _dbContext.SaveChangesAsync();
+
+                ReturnBase<bool> sendConfirmationEmailResult = await _confirmEmailService.SendConfirmationEmailAsync(user);
+
+                while (!sendConfirmationEmailResult.Succeeded)
+                    sendConfirmationEmailResult = await _confirmEmailService.SendConfirmationEmailAsync(user);
+
+                return Success(true, "Email Address Updated Succesfully, please confirm your new email address");
+
+            }
+            catch (Exception ex)
+            {
+                return Failed<bool>(ex.Message);
+            }
+        }
     }
 }
