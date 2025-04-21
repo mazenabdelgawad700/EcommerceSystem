@@ -28,6 +28,28 @@ namespace Ecommerce.API.Controllers
             ReturnBase<string> response = await Mediator.Send(command);
             return ReturnResult(response);
         }
+        //[HttpPost]
+        //[Authorize]
+        //public async Task<IActionResult> ChangePassword([FromBody] ResetPasswordCommand command)
+        //{
+        //    ReturnBase<bool> response = await Mediator.Send(command);
+        //    return ReturnResult(response);
+        //}
+
+        [HttpPost]
+        public async Task<IActionResult> ResetPasswordEmail([FromBody] SendResetPasswordEmailCommand command)
+        {
+            ReturnBase<bool> response = await Mediator.Send(command);
+            return ReturnResult(response);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordCommand command)
+        {
+            ReturnBase<bool> response = await Mediator.Send(command);
+            return ReturnResult(response);
+        }
+
         [HttpGet]
         public async Task<IActionResult> ConfirmEmail([FromQuery] ConfirmEmailCommand command)
         {

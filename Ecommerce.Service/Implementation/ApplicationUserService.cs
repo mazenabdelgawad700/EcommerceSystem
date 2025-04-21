@@ -4,10 +4,12 @@ using Ecommerce.Infrastructure.Context;
 using Ecommerce.Service.Abstraction;
 using Ecommerce.Shared.Base;
 using Ecommerce.Shared.Enums;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
+using System.Net;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
@@ -21,13 +23,16 @@ namespace Ecommerce.Service.Implementation
         private readonly IConfirmEmailService _confirmEmailService;
         private readonly AppDbContext _dbContext;
         private readonly JwtSettings _jwtSettings;
-
-        public ApplicationUserService(UserManager<ApplicationUser> userManager, IConfirmEmailService confirmEmailService, JwtSettings jwtSettings, AppDbContext dbContext)
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly ISendEmailService _emailService;
+        public ApplicationUserService(UserManager<ApplicationUser> userManager, IConfirmEmailService confirmEmailService, JwtSettings jwtSettings, AppDbContext dbContext, IHttpContextAccessor httpContextAccessor, ISendEmailService emailService)
         {
             this._userManager = userManager;
             this._confirmEmailService = confirmEmailService;
             this._jwtSettings = jwtSettings;
             this._dbContext = dbContext;
+            _httpContextAccessor = httpContextAccessor;
+            _emailService = emailService;
         }
         private bool ValidatePassword(string password)
         {
@@ -286,6 +291,73 @@ namespace Ecommerce.Service.Implementation
             JwtSecurityToken jwtToken = tokenHandler.ReadJwtToken(token);
 
             return jwtToken.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Sub)?.Value.ToString();
+        }
+        public async Task<ReturnBase<bool>> SendResetPasswordEmailAsync(string email)
+        {
+            try
+            {
+                if (email is null)
+                    return Failed<bool>("Email is required");
+
+                ApplicationUser? user = await _userManager.FindByEmailAsync(email);
+
+                if (user is null)
+                    return Failed<bool>("User Not Found");
+
+                string resetPasswordToken = await _userManager.GeneratePasswordResetTokenAsync(user);
+                string encodedToken = WebUtility.UrlEncode(resetPasswordToken);
+                HttpRequest requestAccessor = _httpContextAccessor.HttpContext.Request;
+
+                UriBuilder uriBuilder = new()
+                {
+                    Scheme = requestAccessor.Scheme,
+                    Host = requestAccessor.Host.Host,
+                    Port = requestAccessor.Host.Port ?? -1,
+                    Path = "api/applicationuser/ResetPassword",
+                    Query = $"email={Uri.EscapeDataString(email)}&token={encodedToken}"
+                };
+
+                string returnUrl = uriBuilder.ToString();
+
+                string message = $"To Reset Your Password Click This Link: <a href=\"{returnUrl}\">Reset Password</a>";
+
+                var sendEmailResult = await _emailService.SendEmailAsync(email, message, "Reset Password Link", "text/html");
+
+                if (sendEmailResult.Succeeded)
+                    return Success(true, "Reset password email send successfully");
+
+                return Failed<bool>(sendEmailResult.Message);
+            }
+            catch (Exception ex)
+            {
+                return Failed<bool>(ex.Message);
+            }
+        }
+        public async Task<ReturnBase<bool>> ResetPasswordAsync(string resetPasswordToken, string newPassword, string email)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(resetPasswordToken))
+                    return Failed<bool>("Invalid Token");
+
+                ApplicationUser? user = await _userManager.FindByEmailAsync(email);
+
+                if (user is null)
+                    return Failed<bool>("User Not Found");
+
+                string decodedToken = WebUtility.UrlDecode(resetPasswordToken);
+
+                IdentityResult resetPasswordResult = await _userManager.ResetPasswordAsync(user, decodedToken, newPassword);
+
+                if (resetPasswordResult.Succeeded)
+                    return Success(true, "Password has been reset successfully");
+
+                return Failed<bool>(resetPasswordResult.Errors.FirstOrDefault().Description);
+            }
+            catch (Exception ex)
+            {
+                return Failed<bool>(ex.Message);
+            }
         }
     }
 }

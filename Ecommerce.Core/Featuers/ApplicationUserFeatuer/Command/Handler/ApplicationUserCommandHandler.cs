@@ -11,7 +11,9 @@ namespace Ecommerce.Core.Featuers.ApplicationUserFeatuer.Command.Handler
         IRequestHandler<RegisterApplicationUserCommand, ReturnBase<bool>>,
         IRequestHandler<ConfirmEmailCommand, ReturnBase<bool>>,
         IRequestHandler<LoginApplicationUserCommand, ReturnBase<string>>,
-        IRequestHandler<RefreshTokenCommand, ReturnBase<string>>
+        IRequestHandler<RefreshTokenCommand, ReturnBase<string>>,
+        IRequestHandler<ResetPasswordCommand, ReturnBase<bool>>,
+        IRequestHandler<SendResetPasswordEmailCommand, ReturnBase<bool>>
     {
         private readonly IApplicationUserService _applicationUserService;
         private readonly IConfirmEmailService _confirmEmailService;
@@ -89,6 +91,39 @@ namespace Ecommerce.Core.Featuers.ApplicationUserFeatuer.Command.Handler
             catch (Exception ex)
             {
                 return Failed<string>(ex.Message);
+            }
+        }
+
+        public async Task<ReturnBase<bool>> Handle(ResetPasswordCommand request, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var resetPasswordResult = await _applicationUserService.ResetPasswordAsync(request.ResetPasswordToken, request.NewPassword, request.Email);
+
+                if (!resetPasswordResult.Succeeded)
+                    return Failed<bool>(resetPasswordResult.Message);
+
+                return Success(resetPasswordResult.Data, resetPasswordResult.Message);
+            }
+            catch (Exception ex)
+            {
+                return Failed<bool>(ex.Message);
+            }
+        }
+        public async Task<ReturnBase<bool>> Handle(SendResetPasswordEmailCommand request, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var sendResentPasswordEmailResult = await _applicationUserService.SendResetPasswordEmailAsync(request.Email);
+
+                if (!sendResentPasswordEmailResult.Succeeded)
+                    return Failed<bool>(sendResentPasswordEmailResult.Message);
+
+                return Success(sendResentPasswordEmailResult.Data, sendResentPasswordEmailResult.Message);
+            }
+            catch (Exception ex)
+            {
+                return Failed<bool>(ex.Message);
             }
         }
     }
