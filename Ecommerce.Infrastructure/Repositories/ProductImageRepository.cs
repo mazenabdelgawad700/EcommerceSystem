@@ -16,6 +16,25 @@ namespace Ecommerce.Infrastructure.Repositories
             this._dbSet = _dbContext.Set<ProductImage>();
         }
 
+        public async Task<bool> DeleteProductImage(string imgUrl, ulong productId)
+        {
+            try
+            {
+                var existingImage = await _dbSet.FirstOrDefaultAsync(p =>
+                         p.ImageUrl == imgUrl && p.ProductId == productId);
+
+                if (existingImage is null)
+                    return false;
+
+                _dbSet.Remove(existingImage);
+                await _dbContext.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
         public async Task<bool> SaveProductImage(ulong productId, string imgUrl)
         {
             try

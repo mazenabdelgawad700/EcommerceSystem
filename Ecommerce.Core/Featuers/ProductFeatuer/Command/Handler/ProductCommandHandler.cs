@@ -9,7 +9,8 @@ using MediatR;
 namespace Ecommerce.Core.Featuers.ProductFeatuer.Command.Handler
 {
     public class ProductCommandHandler : ReturnBaseHandler,
-        IRequestHandler<AddProductCommand, ReturnBase<bool>>
+        IRequestHandler<AddProductCommand, ReturnBase<bool>>,
+        IRequestHandler<UpdateProductCommand, ReturnBase<bool>>
     {
 
         private readonly IProductService _productService;
@@ -59,6 +60,36 @@ namespace Ecommerce.Core.Featuers.ProductFeatuer.Command.Handler
 
                 await transaction.CommitAsync();
                 return Success(true, addProduct.Message);
+
+            }
+            catch (Exception ex)
+            {
+                await transaction.RollbackAsync();
+                return Failed<bool>(ex.Message);
+            }
+        }
+
+        public async Task<ReturnBase<bool>> Handle(UpdateProductCommand request, CancellationToken cancellationToken)
+        {
+            var transaction = await _productRepository.BeginTransactionAsync();
+            try
+            {
+                var mappedResult = _mapper.Map<Product>(request);
+                var updateProduct = await _productService.UpdateProductAsync(mappedResult);
+
+
+                if (!updateProduct.Succeeded)
+                    return Failed<bool>("Failed to Update product, please try again");
+
+                var saveImagesResult = await _productService.UpdateProductImagesAsync(request.NewFiles, request.Files, updateProduct.Data);
+                if (!saveImagesResult.Succeeded)
+                {
+                    await transaction.RollbackAsync();
+                    return Failed<bool>(saveImagesResult.Message);
+                }
+
+                await transaction.CommitAsync();
+                return Success(true, updateProduct.Message);
 
             }
             catch (Exception ex)

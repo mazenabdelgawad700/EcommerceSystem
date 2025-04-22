@@ -27,8 +27,7 @@ namespace Ecommerce.Service.Implementation
         }
         public ReturnBase<bool> Delete(string imgFullPath)
         {
-            string imgName = Path.GetFileNameWithoutExtension(imgFullPath);
-
+            string imgName = Path.GetFileName(imgFullPath);
             if (string.IsNullOrEmpty(imgName))
                 return Failed<bool>($"file({nameof(imgName)}) is null");
 

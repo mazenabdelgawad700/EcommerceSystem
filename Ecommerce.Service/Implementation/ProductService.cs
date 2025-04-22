@@ -58,5 +58,43 @@ namespace Ecommerce.Service.Implementation
             }
             return Success(true, "Images Saved Successfully");
         }
+        public async Task<ReturnBase<ulong>> UpdateProductAsync(Product product)
+        {
+            try
+            {
+                var updateProduct = await _productRepository.UpdateAsync(product);
+
+                if (!updateProduct.Succeeded)
+                    return Failed<ulong>();
+
+                return Success(product.Id, "Product Updated Successfully");
+            }
+            catch (Exception ex)
+            {
+                return Failed<ulong>(ex.Message);
+            }
+        }
+        public async Task<ReturnBase<bool>> UpdateProductImagesAsync(IEnumerable<IFormFile> files, IEnumerable<string> oldFiles, ulong productId)
+        {
+            foreach (var file in oldFiles)
+            {
+                var deleteFromDbResult = await _productImageRepository.DeleteProductImage(file, productId);
+                if (!deleteFromDbResult)
+                {
+                    return Failed<bool>("Can not delete old images");
+                }
+
+                var deleteResult = _imageService.Delete(file);
+                if (!deleteResult.Succeeded)
+                    return Failed<bool>("Can not delete old images");
+            }
+
+            var saveNewImagesResult = await SaveProductImagesAsync(files, productId);
+
+            if (!saveNewImagesResult.Succeeded)
+                return Failed<bool>("Can not save new images, please try again");
+
+            return Success(true, "Images Saved Successfully");
+        }
     }
 }
