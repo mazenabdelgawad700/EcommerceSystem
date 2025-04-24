@@ -2,7 +2,7 @@
 {
     public enum UserRole
     {
-        Seller,
-        Buyer
+        Buyer = 1,
+        Seller
     }
 }

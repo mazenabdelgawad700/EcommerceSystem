@@ -9,12 +9,17 @@ namespace Ecommerce.Infrastructure.Configurations
         public void Configure(EntityTypeBuilder<ProductSeller> builder)
         {
             // Composite primary key
-            builder.HasKey(ps => new { ps.UserId, ps.ProductId });
+            builder.HasKey(ps => new { ps.SellerId, ps.ProductId });
+
+
+            builder.Property(p => p.ProductId)
+                  .HasColumnType("int");
+
 
             // Many-to-one relationship with User
             builder.HasOne(ps => ps.User)
                 .WithMany(u => u.ProductSellers)
-                .HasForeignKey(ps => ps.UserId)
+                .HasForeignKey(ps => ps.SellerId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             // One-to-one relationship with Product

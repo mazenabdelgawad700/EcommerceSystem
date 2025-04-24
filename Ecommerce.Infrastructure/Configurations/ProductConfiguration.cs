@@ -10,6 +10,9 @@ namespace Ecommerce.Infrastructure.Configurations
         {
             builder.HasKey(p => p.Id);
 
+            builder.Property(p => p.Id)
+                .HasColumnType("int");
+
             builder.Property(p => p.Name)
                 .IsRequired()
                 .HasMaxLength(255);

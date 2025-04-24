@@ -11,6 +11,9 @@ namespace Ecommerce.Infrastructure.Configurations
             // Composite primary key
             builder.HasKey(pi => pi.Id);
 
+            builder.Property(p => p.ProductId)
+                   .HasColumnType("int");
+
             // Many-to-one relationship with Product
             builder.HasOne(pi => pi.Product)
                 .WithMany(p => p.ProductInventories)

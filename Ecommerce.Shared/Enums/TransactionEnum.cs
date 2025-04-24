@@ -2,7 +2,7 @@
 {
     public enum TransactionEnum
     {
-        Pending,
+        Pending = 1,
         Completed,
         Failed,
         Refunded,

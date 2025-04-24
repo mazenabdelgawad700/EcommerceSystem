@@ -15,7 +15,7 @@ namespace Ecommerce.Core.Featuers.ProductFeatuer.Command.Model
         public int CategoryId { get; set; }
         public int BrandId { get; set; }
         public decimal Price { get; set; }
-        public IEnumerable<string> Files { get; set; }
-        public IEnumerable<IFormFile> NewFiles { get; set; }
+        public IEnumerable<string>? Files { get; set; }
+        public IEnumerable<IFormFile>? NewFiles { get; set; }
     }
 }

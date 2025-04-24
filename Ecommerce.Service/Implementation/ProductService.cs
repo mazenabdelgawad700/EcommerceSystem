@@ -18,7 +18,7 @@ namespace Ecommerce.Service.Implementation
             _productImageRepository = productImageRepository;
         }
 
-        public async Task<ReturnBase<ulong>> AddProductAsync(Product product, string userRole, string userId)
+        public async Task<ReturnBase<int>> AddProductAsync(Product product, string userRole, string userId)
         {
             try
             {
@@ -31,16 +31,31 @@ namespace Ecommerce.Service.Implementation
                 var saveProduct = await _productRepository.AddAsync(product);
 
                 if (!saveProduct.Succeeded)
-                    return Failed<ulong>();
+                    return Failed<int>();
 
                 return Success(product.Id, "Product Saved Successfully");
             }
             catch (Exception ex)
             {
-                return Failed<ulong>(ex.Message);
+                return Failed<int>(ex.Message);
             }
         }
-        public async Task<ReturnBase<bool>> SaveProductImagesAsync(IEnumerable<IFormFile> files, ulong productId)
+        public async Task<ReturnBase<bool>> DeleteProductAsync(Product product)
+        {
+            try
+            {
+                var deleteResult = await _productRepository.DeleteProductAsync(product);
+                if (!deleteResult.Succeeded)
+                    return Failed<bool>(deleteResult.Message);
+
+                return Success(true);
+            }
+            catch (Exception ex)
+            {
+                return Failed<bool>(ex.Message);
+            }
+        }
+        public async Task<ReturnBase<bool>> SaveProductImagesAsync(IEnumerable<IFormFile> files, int productId)
         {
             foreach (var file in files)
             {
@@ -58,23 +73,23 @@ namespace Ecommerce.Service.Implementation
             }
             return Success(true, "Images Saved Successfully");
         }
-        public async Task<ReturnBase<ulong>> UpdateProductAsync(Product product)
+        public async Task<ReturnBase<int>> UpdateProductAsync(Product product)
         {
             try
             {
                 var updateProduct = await _productRepository.UpdateAsync(product);
 
                 if (!updateProduct.Succeeded)
-                    return Failed<ulong>();
+                    return Failed<int>();
 
                 return Success(product.Id, "Product Updated Successfully");
             }
             catch (Exception ex)
             {
-                return Failed<ulong>(ex.Message);
+                return Failed<int>(ex.Message);
             }
         }
-        public async Task<ReturnBase<bool>> UpdateProductImagesAsync(IEnumerable<IFormFile> files, IEnumerable<string> oldFiles, ulong productId)
+        public async Task<ReturnBase<bool>> UpdateProductImagesAsync(IEnumerable<IFormFile> files, IEnumerable<string> oldFiles, int productId)
         {
             foreach (var file in oldFiles)
             {
@@ -95,6 +110,46 @@ namespace Ecommerce.Service.Implementation
                 return Failed<bool>("Can not save new images, please try again");
 
             return Success(true, "Images Saved Successfully");
+        }
+        public async Task<ReturnBase<List<ProductImage>>> GetProductImagesForDelete(int productId)
+        {
+            try
+            {
+                var imagesResult = await _productImageRepository.GetAllImagesForProduct(productId);
+
+                if (imagesResult.Succeeded)
+                    return Success(imagesResult.Data);
+
+                return Failed<List<ProductImage>>(imagesResult.Message);
+            }
+            catch (Exception ex)
+            {
+                return Failed<List<ProductImage>>(ex.InnerException.Message);
+            }
+        }
+        public async Task<ReturnBase<bool>> DeleteProductImagesAsync(int productId)
+        {
+            var getImagesResult = await GetProductImagesForDelete(productId);
+
+            if (!getImagesResult.Succeeded)
+                return Failed<bool>(getImagesResult.Message);
+
+            foreach (var image in getImagesResult.Data)
+            {
+                var deleteFromDBResult = await _productImageRepository.DeleteProductImage(image.ImageUrl, image.ProductId);
+
+                if (!deleteFromDBResult)
+                    return Failed<bool>("Can not delete images");
+
+                var deleteResult = _imageService.Delete(image.ImageUrl);
+                if (!deleteResult.Succeeded)
+                    return Failed<bool>("Can not delete images");
+            }
+
+            if (getImagesResult.Data.Count > 0)
+                return Success(true, "Images deleted successfully");
+
+            return Success(true);
         }
     }
 }

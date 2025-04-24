@@ -9,7 +9,11 @@ namespace Ecommerce.Infrastructure.Configurations
         public void Configure(EntityTypeBuilder<CartItem> builder)
         {
             // Composite primary key
-            builder.HasKey(ci => new { ci.CartId, ci.ProductId });
+            builder.HasKey(ci => ci.Id);
+
+            builder.Property(ci => ci.ProductId)
+                .IsRequired()
+                .HasColumnType("int");
 
             builder.Property(ci => ci.Quantity)
                 .IsRequired();

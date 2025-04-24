@@ -10,7 +10,8 @@ namespace Ecommerce.Core.Featuers.ProductFeatuer.Command.Handler
 {
     public class ProductCommandHandler : ReturnBaseHandler,
         IRequestHandler<AddProductCommand, ReturnBase<bool>>,
-        IRequestHandler<UpdateProductCommand, ReturnBase<bool>>
+        IRequestHandler<UpdateProductCommand, ReturnBase<bool>>,
+        IRequestHandler<DeleteProductCommand, ReturnBase<bool>>
     {
 
         private readonly IProductService _productService;
@@ -81,11 +82,53 @@ namespace Ecommerce.Core.Featuers.ProductFeatuer.Command.Handler
                 if (!updateProduct.Succeeded)
                     return Failed<bool>("Failed to Update product, please try again");
 
-                var saveImagesResult = await _productService.UpdateProductImagesAsync(request.NewFiles, request.Files, updateProduct.Data);
-                if (!saveImagesResult.Succeeded)
+                if (request.Files is not null && request.NewFiles is not null)
+                {
+                    var saveImagesResult = await _productService.UpdateProductImagesAsync(request.NewFiles, request.Files, updateProduct.Data);
+                    if (!saveImagesResult.Succeeded)
+                    {
+                        await transaction.RollbackAsync();
+                        return Failed<bool>(saveImagesResult.Message);
+                    }
+                }
+
+                await transaction.CommitAsync();
+                return Success(true, updateProduct.Message);
+
+            }
+            catch (Exception ex)
+            {
+                await transaction.RollbackAsync();
+                return Failed<bool>(ex.Message);
+            }
+        }
+
+        public async Task<ReturnBase<bool>> Handle(DeleteProductCommand request, CancellationToken cancellationToken)
+        {
+            var transaction = await _productRepository.BeginTransactionAsync();
+            try
+            {
+                var mappedResult = _mapper.Map<Product>(request);
+                var updateProduct = await _productService.DeleteProductAsync(mappedResult);
+
+
+                if (!updateProduct.Succeeded)
+                    return Failed<bool>("Failed to Update product, please try again");
+
+                var DeleteImagesResult = await _productService.DeleteProductImagesAsync(request.Id);
+
+                if (!DeleteImagesResult.Succeeded)
                 {
                     await transaction.RollbackAsync();
-                    return Failed<bool>(saveImagesResult.Message);
+                    return Failed<bool>("Failed to delete product because it failed to delete it's images");
+                }
+
+                var deleteProductFromInventoryResult = await _productInventoryService.DeleteProductFromInventory(request.Id);
+
+                if (!deleteProductFromInventoryResult.Succeeded)
+                {
+                    await transaction.RollbackAsync();
+                    return Failed<bool>(deleteProductFromInventoryResult.Message);
                 }
 
                 await transaction.CommitAsync();

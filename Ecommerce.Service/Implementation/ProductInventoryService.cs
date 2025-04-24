@@ -15,7 +15,7 @@ namespace Ecommerce.Service.Implementation
             this._productInventoryRepository = productInventoryRepository;
         }
 
-        public async Task<ReturnBase<bool>> AddProductInventoryEntity(ulong productId, int inventoryId)
+        public async Task<ReturnBase<bool>> AddProductInventoryEntity(int productId, int inventoryId)
         {
             try
             {
@@ -30,6 +30,20 @@ namespace Ecommerce.Service.Implementation
             catch (Exception ex)
             {
                 return Failed<bool>(ex.Message);
+            }
+        }
+        public async Task<ReturnBase<bool>> DeleteProductFromInventory(int productId)
+        {
+            try
+            {
+                var deleteResult = await _productInventoryRepository.DeleteProductFromInventoryAsync(productId);
+                if (!deleteResult.Succeeded)
+                    return Failed<bool>(deleteResult.Message);
+                return Success(true);
+            }
+            catch (Exception ex)
+            {
+                return Failed<bool>(ex.InnerException.Message);
             }
         }
     }

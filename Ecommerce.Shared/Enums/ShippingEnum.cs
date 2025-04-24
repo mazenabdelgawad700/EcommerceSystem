@@ -2,7 +2,7 @@
 {
     public enum ShippingEnum
     {
-        Binding,
+        Binding = 1,
         Shipped,
         InTransit,
         Delivered,

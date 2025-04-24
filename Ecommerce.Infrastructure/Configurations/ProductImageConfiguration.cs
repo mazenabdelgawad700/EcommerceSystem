@@ -11,7 +11,7 @@ namespace Ecommerce.Infrastructure.Configurations
             builder.HasKey(pi => pi.Id);
 
             builder.Property(pi => pi.ProductId)
-                .IsRequired();
+                   .HasColumnType("int");
 
             builder.Property(pi => pi.ImageUrl)
                 .HasMaxLength(255);

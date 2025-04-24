@@ -11,7 +11,8 @@ namespace Ecommerce.Infrastructure.Configurations
             builder.HasKey(pv => pv.Id);
 
             builder.Property(pv => pv.ProductId)
-                .IsRequired();
+                .IsRequired()
+                .HasColumnType("int");
 
             builder.Property(pv => pv.Value)
                 .IsRequired()

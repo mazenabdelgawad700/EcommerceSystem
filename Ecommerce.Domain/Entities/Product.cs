@@ -4,17 +4,16 @@ namespace Ecommerce.Domain.Entities
 {
     public class Product
     {
-        public ulong Id { get; set; }
+        public int Id { get; set; }
         public string Name { get; set; } = null!;
         public string Description { get; set; } = null!;
-        public int BrandId { get; set; }  // Changed from uint to int to match Brand.Id
-        public int CategoryId { get; set; }  // Changed from uint to int to match Category.Id
+        public int BrandId { get; set; }
+        public int CategoryId { get; set; }
         public decimal Price { get; set; }
         public string SellerId { get; set; }
         public ProductEnum Status { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
-        // Removed direct Inventory property as it's handled through ProductInventory
         public Category Category { get; set; }
         public Brand Brand { get; set; }
         public Discount Discount { get; set; }
@@ -24,9 +23,7 @@ namespace Ecommerce.Domain.Entities
         public ICollection<PreferredProducts> PreferredProducts { get; set; }
         public ICollection<ProductInventory> ProductInventories { get; set; }
         public ICollection<CartItem> CartItems { get; set; }
-        public ICollection<OrderItem> OrderItems { get; set; }  // Added missing collection
+        public ICollection<OrderItem> OrderItems { get; set; }
         public ProductSeller ProductSeller { get; set; }
-
-
     }
 }

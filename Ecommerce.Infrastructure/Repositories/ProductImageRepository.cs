@@ -2,6 +2,7 @@
 using Ecommerce.Infrastructure.Abstracts;
 using Ecommerce.Infrastructure.Context;
 using Ecommerce.Infrastructure.RepositoriesBase;
+using Ecommerce.Shared.Base;
 using Microsoft.EntityFrameworkCore;
 
 namespace Ecommerce.Infrastructure.Repositories
@@ -16,7 +17,7 @@ namespace Ecommerce.Infrastructure.Repositories
             this._dbSet = _dbContext.Set<ProductImage>();
         }
 
-        public async Task<bool> DeleteProductImage(string imgUrl, ulong productId)
+        public async Task<bool> DeleteProductImage(string imgUrl, int productId)
         {
             try
             {
@@ -35,7 +36,26 @@ namespace Ecommerce.Infrastructure.Repositories
                 return false;
             }
         }
-        public async Task<bool> SaveProductImage(ulong productId, string imgUrl)
+        public async Task<ReturnBase<List<ProductImage>>> GetAllImagesForProduct(int productId)
+        {
+            try
+            {
+                //var images = await _dbContext.ProductImages
+                //.FromSqlRaw("SELECT * FROM ProductImages WHERE ProductId = {0}", productId)
+                //.ToListAsync(); 
+
+                var images = _dbContext.ProductImages
+                    .Where(x => x.ProductId == productId)
+                    .ToList();
+
+                return Success(images);
+            }
+            catch (Exception ex)
+            {
+                return Failed<List<ProductImage>>(ex.InnerException.Message);
+            }
+        }
+        public async Task<bool> SaveProductImage(int productId, string imgUrl)
         {
             try
             {

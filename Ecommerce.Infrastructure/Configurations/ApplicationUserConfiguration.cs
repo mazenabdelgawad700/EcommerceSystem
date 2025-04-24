@@ -8,8 +8,6 @@ namespace Ecommerce.Infrastructure.Configurations
     {
         public void Configure(EntityTypeBuilder<ApplicationUser> builder)
         {
-            // Base configuration is handled by IdentityDbContext
-
             // One-to-one relationship with Cart
             builder.HasOne(u => u.Cart)
                 .WithOne()
@@ -46,7 +44,7 @@ namespace Ecommerce.Infrastructure.Configurations
 
             builder.HasMany(u => u.ProductSellers)  // Pluralized for consistency
                 .WithOne(ps => ps.User)
-                .HasForeignKey(ps => ps.UserId)
+                .HasForeignKey(ps => ps.SellerId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             // Added missing collection configuration

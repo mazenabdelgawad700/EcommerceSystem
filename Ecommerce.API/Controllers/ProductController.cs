@@ -40,5 +40,20 @@ namespace Ecommerce.API.Controllers
 
             return ReturnResult(response);
         }
+        [HttpDelete]
+        [Authorize(Roles = "Admin,Seller")]
+        public async Task<IActionResult> Delete([FromBody] DeleteProductCommand command)
+        {
+            string? userIdFromToken = User.FindFirst("UserId")?.Value;
+
+            if (userIdFromToken is null)
+                return Unauthorized("Invalid Token");
+
+            if (command.SellerId != userIdFromToken)
+                return Unauthorized("You are not allowed to perform this action");
+
+            ReturnBase<bool> response = await Mediator.Send(command);
+            return ReturnResult(response);
+        }
     }
 }

@@ -9,7 +9,11 @@ namespace Ecommerce.Infrastructure.Configurations
         public void Configure(EntityTypeBuilder<OrderItem> builder)
         {
             // Composite primary key
-            builder.HasKey(oi => new { oi.OrderId, oi.ProductId });
+            builder.HasKey(oi => oi.Id);
+
+            builder.Property(o => o.ProductId)
+                .IsRequired()
+                .HasColumnType("int");
 
             builder.Property(oi => oi.Quantity)
                 .IsRequired();

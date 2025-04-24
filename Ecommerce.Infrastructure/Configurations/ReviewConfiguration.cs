@@ -14,7 +14,8 @@ namespace Ecommerce.Infrastructure.Configurations
                 .IsRequired();
 
             builder.Property(r => r.ProductId)
-                .IsRequired();
+                .IsRequired()
+                .HasColumnType("int");
 
             builder.Property(r => r.Rating)
                 .IsRequired();
