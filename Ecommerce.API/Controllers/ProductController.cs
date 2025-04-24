@@ -62,5 +62,11 @@ namespace Ecommerce.API.Controllers
             var response = await Mediator.Send(query);
             return ReturnResult(response);
         }
+        [HttpGet]
+        public async Task<IActionResult> GetProducts([FromQuery] GetProductAsPaginatedListQuery query)
+        {
+            var response = await Mediator.Send(query);
+            return ReturnResult(response);
+        }
     }
 }

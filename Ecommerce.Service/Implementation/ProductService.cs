@@ -3,6 +3,7 @@ using Ecommerce.Infrastructure.Abstracts;
 using Ecommerce.Service.Abstraction;
 using Ecommerce.Shared.Base;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 
 namespace Ecommerce.Service.Implementation
 {
@@ -165,6 +166,30 @@ namespace Ecommerce.Service.Implementation
             catch (Exception ex)
             {
                 return Failed<Product>(ex.InnerException.Message);
+            }
+        }
+        public ReturnBase<IQueryable<Product>> GetProductsAsPaginated(int? categoryId = null, int? brandId = null)
+        {
+            try
+            {
+                var query = _productRepository.GetTableNoTracking().Data.Include(p => p.ProductImages).AsQueryable();
+                if (categoryId is not null && brandId is not null)
+                {
+                    query = query.Where(x => x.CategoryId == categoryId.Value && x.BrandId == brandId);
+                }
+                else if (categoryId is not null && brandId is null)
+                {
+                    query = query.Where(x => x.CategoryId == categoryId.Value);
+                }
+                else if (categoryId is null && brandId is not null)
+                {
+                    query = query.Where(x => x.BrandId == brandId.Value);
+                }
+                return Success(query);
+            }
+            catch (Exception ex)
+            {
+                return Failed<IQueryable<Product>>(ex.InnerException.Message);
             }
         }
     }
