@@ -224,5 +224,19 @@ namespace Ecommerce.Service.Implementation
                 return Failed<bool>(ex.InnerException.Message);
             }
         }
+        public ReturnBase<IQueryable<RecentSearch>> GetRecentSearchForUser(string userId)
+        {
+            try
+            {
+                var query = _recentSearchRepository.GetTableNoTracking()
+                    .Data.Where(x => x.UserId == userId).AsQueryable();
+
+                return Success(query);
+            }
+            catch (Exception ex)
+            {
+                return Failed<IQueryable<RecentSearch>>(ex.InnerException.Message);
+            }
+        }
     }
 }

@@ -11,7 +11,8 @@ namespace Ecommerce.Core.Featuers.ProductFeatuer.Query.Handler
     public class ProductQueryHandler : ReturnBaseHandler,
         IRequestHandler<GetProductByIdQuery, ReturnBase<GetProductByIdResponse>>,
         IRequestHandler<SearchAboutProductQuery, ReturnBase<IQueryable<SearchAboutProductResponse>>>,
-        IRequestHandler<GetProductAsPaginatedListQuery, ReturnBase<PaginatedResult<GetProductAsPaginatedListResponse>>>
+        IRequestHandler<GetProductAsPaginatedListQuery, ReturnBase<PaginatedResult<GetProductAsPaginatedListResponse>>>,
+        IRequestHandler<GetRecentSearchQuery, ReturnBase<IQueryable<GetRecentSearchResponse>>>
     {
         private readonly IProductService _productService;
         private readonly IMapper _mapper;
@@ -76,6 +77,25 @@ namespace Ecommerce.Core.Featuers.ProductFeatuer.Query.Handler
             catch (Exception ex)
             {
                 return Failed<IQueryable<SearchAboutProductResponse>>(ex.InnerException.Message);
+            }
+        }
+
+        public async Task<ReturnBase<IQueryable<GetRecentSearchResponse>>> Handle(GetRecentSearchQuery request, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var getSearchResult = _productService.GetRecentSearchForUser(request.UserId);
+
+                if (!getSearchResult.Succeeded)
+                    return Failed<IQueryable<GetRecentSearchResponse>>(getSearchResult.Message);
+
+                var mappedResult = _mapper.ProjectTo<GetRecentSearchResponse>(getSearchResult.Data);
+
+                return Success(mappedResult);
+            }
+            catch (Exception ex)
+            {
+                return Failed<IQueryable<GetRecentSearchResponse>>(ex.InnerException.Message);
             }
         }
     }

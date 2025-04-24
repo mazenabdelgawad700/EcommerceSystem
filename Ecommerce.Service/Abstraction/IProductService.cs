@@ -16,5 +16,6 @@ namespace Ecommerce.Service.Abstraction
         Task<ReturnBase<Product>> GetProductByIdAsync(int productId);
         ReturnBase<IQueryable<Product>> GetProductsAsPaginated(int? categoryId = null, int? brandId = null);
         ReturnBase<IQueryable<Product>> SearchAboutProduct(string? searchQuery = null);
+        ReturnBase<IQueryable<RecentSearch>> GetRecentSearchForUser(string userId);
     }
 }
