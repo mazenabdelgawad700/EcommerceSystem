@@ -11,7 +11,8 @@ namespace Ecommerce.Core.Featuers.ProductFeatuer.Command.Handler
     public class ProductCommandHandler : ReturnBaseHandler,
         IRequestHandler<AddProductCommand, ReturnBase<bool>>,
         IRequestHandler<UpdateProductCommand, ReturnBase<bool>>,
-        IRequestHandler<DeleteProductCommand, ReturnBase<bool>>
+        IRequestHandler<DeleteProductCommand, ReturnBase<bool>>,
+        IRequestHandler<SaveRecentSearchResultCommand, ReturnBase<bool>>
     {
 
         private readonly IProductService _productService;
@@ -139,6 +140,25 @@ namespace Ecommerce.Core.Featuers.ProductFeatuer.Command.Handler
             {
                 await transaction.RollbackAsync();
                 return Failed<bool>(ex.Message);
+            }
+        }
+
+        public async Task<ReturnBase<bool>> Handle(SaveRecentSearchResultCommand request, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var mappedResult = _mapper.Map<RecentSearch>(request);
+
+                var saveRecentSearchResult = await _productService.SaveRecentSearchResultAsync(mappedResult);
+
+                if (!saveRecentSearchResult.Succeeded)
+                    return Failed<bool>(saveRecentSearchResult.Message);
+
+                return Success(true);
+            }
+            catch (Exception ex)
+            {
+                return Failed<bool>(ex.InnerException.Message);
             }
         }
     }

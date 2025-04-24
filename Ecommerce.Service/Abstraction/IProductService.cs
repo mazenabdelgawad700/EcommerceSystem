@@ -12,6 +12,7 @@ namespace Ecommerce.Service.Abstraction
         Task<ReturnBase<bool>> SaveProductImagesAsync(IEnumerable<IFormFile> files, int productId);
         Task<ReturnBase<bool>> UpdateProductImagesAsync(IEnumerable<IFormFile> files, IEnumerable<string> oldFiles, int productId);
         Task<ReturnBase<bool>> DeleteProductImagesAsync(int productId);
+        Task<ReturnBase<bool>> SaveRecentSearchResultAsync(RecentSearch recentSearch);
         Task<ReturnBase<Product>> GetProductByIdAsync(int productId);
         ReturnBase<IQueryable<Product>> GetProductsAsPaginated(int? categoryId = null, int? brandId = null);
         ReturnBase<IQueryable<Product>> SearchAboutProduct(string? searchQuery = null);

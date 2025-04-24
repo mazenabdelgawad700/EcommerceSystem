@@ -12,11 +12,13 @@ namespace Ecommerce.Service.Implementation
         private readonly IProductRepository _productRepository;
         private readonly IProductImageRepository _productImageRepository;
         private readonly IImageService _imageService;
-        public ProductService(IProductRepository productRepository, IImageService imageService, IProductImageRepository productImageRepository)
+        private readonly IRecentSearchRepository _recentSearchRepository;
+        public ProductService(IProductRepository productRepository, IImageService imageService, IProductImageRepository productImageRepository, IRecentSearchRepository recentSearchRepository)
         {
             this._productRepository = productRepository;
             _imageService = imageService;
             _productImageRepository = productImageRepository;
+            _recentSearchRepository = recentSearchRepository;
         }
 
         public async Task<ReturnBase<int>> AddProductAsync(Product product, string userRole, string userId)
@@ -206,6 +208,20 @@ namespace Ecommerce.Service.Implementation
             catch (Exception ex)
             {
                 return Failed<IQueryable<Product>>(ex.InnerException.Message);
+            }
+        }
+        public async Task<ReturnBase<bool>> SaveRecentSearchResultAsync(RecentSearch recentSearch)
+        {
+            try
+            {
+                var saveRecentSearchResult = await _recentSearchRepository.AddAsync(recentSearch);
+                if (!saveRecentSearchResult.Succeeded)
+                    return Failed<bool>(saveRecentSearchResult.Message);
+                return Success(true);
+            }
+            catch (Exception ex)
+            {
+                return Failed<bool>(ex.InnerException.Message);
             }
         }
     }

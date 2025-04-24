@@ -74,5 +74,20 @@ namespace Ecommerce.API.Controllers
             var response = await Mediator.Send(query);
             return ReturnResult(response);
         }
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> SaveRecentSearch([FromQuery] SaveRecentSearchResultCommand command)
+        {
+            string? userIdFromToken = User.FindFirst("UserId")?.Value;
+
+            if (userIdFromToken is null)
+                return Unauthorized("Invalid Token");
+
+            if (command.UserId != userIdFromToken)
+                return Unauthorized("You are not allowed to perform this action");
+
+            var response = await Mediator.Send(command);
+            return ReturnResult(response);
+        }
     }
 }
