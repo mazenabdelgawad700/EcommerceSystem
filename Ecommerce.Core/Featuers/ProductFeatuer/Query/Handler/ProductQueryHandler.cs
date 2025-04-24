@@ -10,6 +10,7 @@ namespace Ecommerce.Core.Featuers.ProductFeatuer.Query.Handler
 {
     public class ProductQueryHandler : ReturnBaseHandler,
         IRequestHandler<GetProductByIdQuery, ReturnBase<GetProductByIdResponse>>,
+        IRequestHandler<SearchAboutProductQuery, ReturnBase<IQueryable<SearchAboutProductResponse>>>,
         IRequestHandler<GetProductAsPaginatedListQuery, ReturnBase<PaginatedResult<GetProductAsPaginatedListResponse>>>
     {
         private readonly IProductService _productService;
@@ -57,6 +58,24 @@ namespace Ecommerce.Core.Featuers.ProductFeatuer.Query.Handler
             catch (Exception ex)
             {
                 return Failed<PaginatedResult<GetProductAsPaginatedListResponse>>(ex.InnerException.Message);
+            }
+        }
+        public async Task<ReturnBase<IQueryable<SearchAboutProductResponse>>> Handle(SearchAboutProductQuery request, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var getProductsResult = _productService.SearchAboutProduct(request.SearchQuery);
+
+                if (!getProductsResult.Succeeded)
+                    return Failed<IQueryable<SearchAboutProductResponse>>(getProductsResult.Message);
+
+                var mappedResult = _mapper.ProjectTo<SearchAboutProductResponse>(getProductsResult.Data);
+
+                return Success(mappedResult);
+            }
+            catch (Exception ex)
+            {
+                return Failed<IQueryable<SearchAboutProductResponse>>(ex.InnerException.Message);
             }
         }
     }

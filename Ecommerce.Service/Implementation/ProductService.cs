@@ -192,5 +192,21 @@ namespace Ecommerce.Service.Implementation
                 return Failed<IQueryable<Product>>(ex.InnerException.Message);
             }
         }
+        public ReturnBase<IQueryable<Product>> SearchAboutProduct(string? searchQuery = null)
+        {
+            try
+            {
+                var query = _productRepository.GetTableNoTracking().Data.Include(p => p.ProductImages).AsQueryable();
+                if (searchQuery is not null)
+                {
+                    query = query.Where(x => x.Name.Contains(searchQuery));
+                }
+                return Success(query);
+            }
+            catch (Exception ex)
+            {
+                return Failed<IQueryable<Product>>(ex.InnerException.Message);
+            }
+        }
     }
 }
