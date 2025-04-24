@@ -7,5 +7,6 @@ namespace Ecommerce.Infrastructure.Abstracts
     public interface IProductRepository : IBaseRepository<Product>
     {
         Task<ReturnBase<bool>> DeleteProductAsync(Product product);
+        Task<ReturnBase<Product>> GetProductAsync(int id);
     }
 }

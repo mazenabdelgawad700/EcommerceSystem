@@ -151,5 +151,21 @@ namespace Ecommerce.Service.Implementation
 
             return Success(true);
         }
+        public async Task<ReturnBase<Product>> GetProductByIdAsync(int productId)
+        {
+            try
+            {
+                var productResult = await _productRepository.GetByIdAsync(productId);
+
+                if (!productResult.Succeeded)
+                    return Failed<Product>(productResult.Message);
+
+                return Success(productResult.Data);
+            }
+            catch (Exception ex)
+            {
+                return Failed<Product>(ex.InnerException.Message);
+            }
+        }
     }
 }

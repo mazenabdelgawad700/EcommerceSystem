@@ -1,5 +1,6 @@
 ﻿using Ecommerce.API.Base;
 using Ecommerce.Core.Featuers.ProductFeatuer.Command.Model;
+using Ecommerce.Core.Featuers.ProductFeatuer.Query.Model;
 using Ecommerce.Shared.Base;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -53,6 +54,12 @@ namespace Ecommerce.API.Controllers
                 return Unauthorized("You are not allowed to perform this action");
 
             ReturnBase<bool> response = await Mediator.Send(command);
+            return ReturnResult(response);
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetById([FromQuery] GetProductByIdQuery query)
+        {
+            var response = await Mediator.Send(query);
             return ReturnResult(response);
         }
     }

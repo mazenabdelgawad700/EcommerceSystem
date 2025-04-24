@@ -31,5 +31,17 @@ namespace Ecommerce.Infrastructure.Repositories
                 return Failed<bool>(ex.InnerException.Message);
             }
         }
+
+        public async Task<ReturnBase<Product>> GetProductAsync(int id)
+        {
+            var product = await _dbSet.Where(x => x.Id == id)
+                .Include(p => p.ProductImages)
+                .FirstOrDefaultAsync();
+
+
+            if (product == null)
+                return Failed<Product>("Can not get product");
+            return Success(product);
+        }
     }
 }

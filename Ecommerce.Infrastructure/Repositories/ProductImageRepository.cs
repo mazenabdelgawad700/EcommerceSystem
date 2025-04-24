@@ -40,10 +40,6 @@ namespace Ecommerce.Infrastructure.Repositories
         {
             try
             {
-                //var images = await _dbContext.ProductImages
-                //.FromSqlRaw("SELECT * FROM ProductImages WHERE ProductId = {0}", productId)
-                //.ToListAsync(); 
-
                 var images = _dbContext.ProductImages
                     .Where(x => x.ProductId == productId)
                     .ToList();
