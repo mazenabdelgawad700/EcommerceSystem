@@ -2,7 +2,6 @@
 using Ecommerce.Infrastructure.Abstracts;
 using Ecommerce.Service.Abstraction;
 using Ecommerce.Shared.Base;
-using Ecommerce.Shared.SharedResponse;
 using Microsoft.EntityFrameworkCore;
 
 namespace Ecommerce.Service.Implementation
@@ -34,15 +33,13 @@ namespace Ecommerce.Service.Implementation
             else
                 cart = cartResult;
 
-            var res = new GetCartResponse();
-
             var fullCart = await _cartRepository.GetTableNoTracking().Data
                                                 .Include(c => c.CartItems)
                                                    .ThenInclude(i => i.Product)
                                                       .ThenInclude(p => p.ProductImages)
                                                 .FirstOrDefaultAsync(c => c.Id == cart.Id);
 
-            return Success(fullCart);
+            return Success(fullCart!);
         }
         private async Task<ReturnBase<bool>> CreateCartAsync(Cart cart)
         {

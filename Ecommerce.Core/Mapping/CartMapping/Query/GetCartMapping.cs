@@ -9,6 +9,7 @@ namespace Ecommerce.Core.Mapping.CartMapping.Query
         public GetCartMapping()
         {
             CreateMap<Cart, GetCartResponse>()
+             .ForMember(dest => dest.CartId, opt => opt.MapFrom(src => src.Id))
              .ForMember(dest => dest.Items, opt => opt.MapFrom(src => src.CartItems));
 
             CreateMap<CartItem, CartItemDto>()

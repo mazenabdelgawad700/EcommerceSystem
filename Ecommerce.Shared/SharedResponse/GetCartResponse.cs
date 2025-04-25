@@ -2,7 +2,8 @@
 {
     public class GetCartResponse
     {
-        public IEnumerable<CartItemDto>? Items;
+        public int CartId { get; set; }
+        public IEnumerable<CartItemDto>? Items { get; set; }
     }
     public class CartItemDto
     {

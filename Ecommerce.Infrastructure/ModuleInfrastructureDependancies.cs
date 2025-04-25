@@ -1,6 +1,5 @@
 ﻿using Ecommerce.Infrastructure.Abstracts;
 using Ecommerce.Infrastructure.Repositories;
-using Ecommerce.Infrastructure.RepositoriesBase;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Ecommerce.Infrastructure
@@ -14,6 +13,7 @@ namespace Ecommerce.Infrastructure
             services.AddTransient<IProductInventoryRepository, ProductInventoryRepository>();
             services.AddTransient<IRecentSearchRepository, RecentSearchRepository>();
             services.AddTransient<ICartRepository, CartRepository>();
+            services.AddTransient<ICartItemRepository, CartItemRepository>();
             return services;
         }
     }
