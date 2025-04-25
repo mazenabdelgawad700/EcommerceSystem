@@ -9,12 +9,39 @@ namespace Ecommerce.Service.Implementation
     internal class CartService : ReturnBaseHandler, ICartService
     {
         private readonly ICartRepository _cartRepository;
+        private readonly ICartItemRepository _cartItemRepository;
 
-        public CartService(ICartRepository cartRepository)
+        public CartService(ICartRepository cartRepository, ICartItemRepository cartItemRepository)
         {
             this._cartRepository = cartRepository;
+            _cartItemRepository = cartItemRepository;
         }
 
+        public async Task<ReturnBase<bool>> DeleteCartAsync(int cartId)
+        {
+            try
+            {
+                var cartItems = await _cartItemRepository.GetTableNoTracking().Data.Where(x => x.CartId == cartId).ToListAsync();
+
+                if (cartItems.Count > 0)
+                {
+                    var deleteCartItemsResult = await _cartItemRepository.DeleteRangeAsync(cartItems);
+                    if (!deleteCartItemsResult.Succeeded)
+                        return Failed<bool>(deleteCartItemsResult.Message);
+                }
+
+
+
+                var deleteResult = await _cartRepository.DeleteAsync(cartId);
+                if (!deleteResult.Succeeded)
+                    return Failed<bool>(deleteResult.Message);
+                return Success(true);
+            }
+            catch (Exception ex)
+            {
+                return Failed<bool>(ex.InnerException.Message);
+            }
+        }
         public async Task<ReturnBase<Cart>> GetCartAsync(string userId)
         {
             var cartResult = await _cartRepository.GetTableNoTracking().Data.Where(c => c.UserId == userId).FirstOrDefaultAsync();

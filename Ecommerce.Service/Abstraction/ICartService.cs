@@ -6,5 +6,6 @@ namespace Ecommerce.Service.Abstraction
     public interface ICartService
     {
         Task<ReturnBase<Cart>> GetCartAsync(string userId);
+        Task<ReturnBase<bool>> DeleteCartAsync(int cartId);
     }
 }

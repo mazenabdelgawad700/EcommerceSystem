@@ -7,6 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Featuers\CartFeatuer\Commnad\**" />
+    <EmbeddedResource Remove="Featuers\CartFeatuer\Commnad\**" />
+    <None Remove="Featuers\CartFeatuer\Commnad\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Ecommerce.Domain\Ecommerce.Domain.csproj" />
     <ProjectReference Include="..\Ecommerce.Infrastructure\Ecommerce.Infrastructure.csproj" />
     <ProjectReference Include="..\Ecommerce.Service\Ecommerce.Service.csproj" />
@@ -25,8 +31,6 @@
 
   <ItemGroup>
     <Folder Include="Featuers\ApplicationUserFeatuer\Query\" />
-    <Folder Include="Featuers\CartFeatuer\Commnad\Handler\" />
-    <Folder Include="Featuers\CartFeatuer\Commnad\Model\" />
     <Folder Include="Featuers\CartFeatuer\Query\Response\" />
   </ItemGroup>
 

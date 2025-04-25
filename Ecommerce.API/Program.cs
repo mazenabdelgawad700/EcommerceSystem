@@ -2,6 +2,7 @@ using Ecommerce.Core;
 using Ecommerce.Core.MiddelWare;
 using Ecommerce.Infrastructure;
 using Ecommerce.Infrastructure.Context;
+using Ecommerce.Service.Implementation;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -45,6 +46,7 @@ namespace Ecommerce.API
             });
             #endregion
 
+            builder.Services.AddHostedService<CartCleanupService>();
 
             var app = builder.Build();
 

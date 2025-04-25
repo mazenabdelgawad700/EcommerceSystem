@@ -1,4 +1,5 @@
 ﻿using Ecommerce.API.Base;
+using Ecommerce.Core.Featuers.CartFeatuer.Command.Model;
 using Ecommerce.Core.Featuers.CartFeatuer.Query.Model;
 using Ecommerce.Shared.Base;
 using Ecommerce.Shared.SharedResponse;
@@ -23,6 +24,23 @@ namespace Ecommerce.API.Controllers
                 return Unauthorized("You are not allowed to perform this action");
 
             ReturnBase<GetCartResponse> response = await Mediator.Send(query);
+
+            return ReturnResult(response);
+        }
+
+        [HttpDelete]
+        [Authorize]
+        public async Task<IActionResult> Delete([FromBody] DeleteCartCommand command)
+        {
+            string? userIdFromToken = User.FindFirst("UserId")?.Value;
+
+            if (userIdFromToken is null)
+                return Unauthorized("Invalid Token");
+
+            if (command.UserId != userIdFromToken)
+                return Unauthorized("You are not allowed to perform this action");
+
+            ReturnBase<bool> response = await Mediator.Send(command);
 
             return ReturnResult(response);
         }
