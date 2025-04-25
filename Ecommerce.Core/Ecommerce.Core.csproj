@@ -25,6 +25,7 @@
 
   <ItemGroup>
     <Folder Include="Featuers\ApplicationUserFeatuer\Query\" />
+    <Folder Include="Featuers\CartFeatuer\Query\Response\" />
   </ItemGroup>
 
 

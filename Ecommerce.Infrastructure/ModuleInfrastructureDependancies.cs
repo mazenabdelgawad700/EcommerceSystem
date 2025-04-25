@@ -13,6 +13,7 @@ namespace Ecommerce.Infrastructure
             services.AddTransient<IProductImageRepository, ProductImageRepository>();
             services.AddTransient<IProductInventoryRepository, ProductInventoryRepository>();
             services.AddTransient<IRecentSearchRepository, RecentSearchRepository>();
+            services.AddTransient<ICartRepository, CartRepository>();
             return services;
         }
     }
