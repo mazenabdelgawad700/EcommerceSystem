@@ -51,7 +51,7 @@ namespace Ecommerce.Core.Featuers.ProductFeatuer.Command.Handler
                     return Failed<bool>("Failed To Save Product Images, pleast try again");
                 }
 
-                var saveToInventoryResult = await _productInventoryService.AddProductInventoryEntity(addProduct.Data, 1);
+                var saveToInventoryResult = await _productInventoryService.AddProductInventoryEntity(addProduct.Data, request.InventoryId);
 
                 if (!saveToInventoryResult.Succeeded)
                 {
@@ -59,10 +59,8 @@ namespace Ecommerce.Core.Featuers.ProductFeatuer.Command.Handler
                     return Failed<bool>(saveToInventoryResult.Message);
                 }
 
-
                 await transaction.CommitAsync();
                 return Success(true, addProduct.Message);
-
             }
             catch (Exception ex)
             {

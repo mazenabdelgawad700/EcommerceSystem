@@ -2,6 +2,7 @@
 using Ecommerce.Infrastructure.Abstracts;
 using Ecommerce.Service.Abstraction;
 using Ecommerce.Shared.Base;
+using Microsoft.EntityFrameworkCore;
 
 namespace Ecommerce.Service.Implementation
 {
@@ -32,6 +33,24 @@ namespace Ecommerce.Service.Implementation
                 return Failed<bool>(ex.Message);
             }
         }
+        public async Task<ReturnBase<bool>> CheckProductInInventoryAsync(int productId, int quantity)
+        {
+            try
+            {
+                var product = await _productInventoryRepository.GetTableNoTracking()
+                    .Data.Where(x => x.ProductId == productId).FirstOrDefaultAsync();
+
+                if (product is null)
+                    return Failed<bool>("Failed to get product");
+
+                return product.Quantity >= quantity ? Success(true) : Failed<bool>("Inventory Limit exceeded");
+            }
+            catch (Exception ex)
+            {
+                return Failed<bool>(ex.Message);
+            }
+        }
+
         public async Task<ReturnBase<bool>> DeleteProductFromInventory(int productId)
         {
             try

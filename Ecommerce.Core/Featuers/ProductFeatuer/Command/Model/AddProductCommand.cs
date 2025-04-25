@@ -13,6 +13,7 @@ namespace Ecommerce.Core.Featuers.ProductFeatuer.Command.Model
         public string Status { get; set; } = null!;
         public int CategoryId { get; set; }
         public int BrandId { get; set; }
+        public int InventoryId { get; set; }
         public decimal Price { get; set; }
         public IEnumerable<IFormFile> Files { get; set; }
     }
