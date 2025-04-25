@@ -50,14 +50,27 @@ namespace Ecommerce.Service.Implementation
                 return Failed<bool>(ex.Message);
             }
         }
-
-        public async Task<ReturnBase<bool>> DeleteProductFromInventory(int productId)
+        public async Task<ReturnBase<bool>> DeleteProductFromInventoryAsync(int productId)
         {
             try
             {
-                var deleteResult = await _productInventoryRepository.DeleteProductFromInventoryAsync(productId);
+                var deleteResult = await _productInventoryRepository.DeleteProductFromInventoryAsyncAsync(productId);
                 if (!deleteResult.Succeeded)
                     return Failed<bool>(deleteResult.Message);
+                return Success(true);
+            }
+            catch (Exception ex)
+            {
+                return Failed<bool>(ex.InnerException.Message);
+            }
+        }
+        public async Task<ReturnBase<bool>> UpdateProductQuantityAsync(ProductInventory productInventory)
+        {
+            try
+            {
+                var updateResult = await _productInventoryRepository.UpdateAsync(productInventory);
+                if (!updateResult.Succeeded)
+                    return Failed<bool>(updateResult.Message);
                 return Success(true);
             }
             catch (Exception ex)

@@ -17,7 +17,7 @@ namespace Ecommerce.Infrastructure.Repositories
             _dbSet = _dbContext.Set<ProductInventory>();
         }
 
-        public async Task<ReturnBase<bool>> DeleteProductFromInventoryAsync(int productId)
+        public async Task<ReturnBase<bool>> DeleteProductFromInventoryAsyncAsync(int productId)
         {
             try
             {

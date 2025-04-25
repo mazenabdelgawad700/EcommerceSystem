@@ -122,12 +122,12 @@ namespace Ecommerce.Core.Featuers.ProductFeatuer.Command.Handler
                     return Failed<bool>("Failed to delete product because it failed to delete it's images");
                 }
 
-                var deleteProductFromInventoryResult = await _productInventoryService.DeleteProductFromInventory(request.Id);
+                var DeleteProductFromInventoryAsyncResult = await _productInventoryService.DeleteProductFromInventoryAsync(request.Id);
 
-                if (!deleteProductFromInventoryResult.Succeeded)
+                if (!DeleteProductFromInventoryAsyncResult.Succeeded)
                 {
                     await transaction.RollbackAsync();
-                    return Failed<bool>(deleteProductFromInventoryResult.Message);
+                    return Failed<bool>(DeleteProductFromInventoryAsyncResult.Message);
                 }
 
                 await transaction.CommitAsync();

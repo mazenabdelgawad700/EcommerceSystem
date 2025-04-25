@@ -143,7 +143,7 @@ namespace Ecommerce.Infrastructure.RepositoriesBase
             }
             catch (Exception ex)
             {
-                return Failed<bool>(ex.Message);
+                return Failed<bool>(ex.InnerException.Message);
             }
         }
         public async Task<ReturnBase<bool>> UpdateRangeAsync(ICollection<T> entities)
