@@ -49,5 +49,19 @@ namespace Ecommerce.Service.Implementation
                 return Failed<bool>(ex.InnerException.Message);
             }
         }
+        public async Task<ReturnBase<bool>> DeleteCartItemAsync(int cartItemId)
+        {
+            try
+            {
+                var deleteResult = await _cartItemRepository.DeleteAsync(cartItemId);
+                if (!deleteResult.Succeeded)
+                    return Failed<bool>(deleteResult.Message);
+                return Success(true);
+            }
+            catch (Exception ex)
+            {
+                return Failed<bool>(ex.Message);
+            }
+        }
     }
 }

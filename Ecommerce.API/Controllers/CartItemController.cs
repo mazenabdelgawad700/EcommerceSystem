@@ -18,5 +18,14 @@ namespace Ecommerce.API.Controllers
 
             return ReturnResult(response);
         }
+
+        [HttpDelete]
+        [Authorize]
+        public async Task<IActionResult> Delete([FromBody] DeleteCartItemCommand command)
+        {
+
+            ReturnBase<bool> response = await Mediator.Send(command);
+            return ReturnResult(response);
+        }
     }
 }

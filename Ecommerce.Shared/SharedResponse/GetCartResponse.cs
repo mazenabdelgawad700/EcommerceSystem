@@ -7,6 +7,7 @@
     }
     public class CartItemDto
     {
+        public int Id { get; set; }
         public string ProductName { get; set; }
         public string ProductImage { get; set; }
         public byte Quantity { get; set; }

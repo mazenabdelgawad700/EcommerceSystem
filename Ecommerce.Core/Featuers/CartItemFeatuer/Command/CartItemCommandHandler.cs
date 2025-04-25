@@ -7,7 +7,9 @@ using MediatR;
 
 namespace Ecommerce.Core.Featuers.CartItemFeatuer.Command
 {
-    public class CartItemCommandHandler : ReturnBaseHandler, IRequestHandler<AddCartItemCommand, ReturnBase<bool>>
+    public class CartItemCommandHandler : ReturnBaseHandler,
+        IRequestHandler<AddCartItemCommand, ReturnBase<bool>>,
+        IRequestHandler<DeleteCartItemCommand, ReturnBase<bool>>
     {
         private readonly ICartItemService _cartItemService;
         private readonly IMapper _mapper;
@@ -28,6 +30,18 @@ namespace Ecommerce.Core.Featuers.CartItemFeatuer.Command
                 var addResult = await _cartItemService.AddCartItemAsync(mappedResult);
 
                 return addResult.Succeeded ? Success(true) : Failed<bool>(addResult.Message);
+            }
+            catch (Exception ex)
+            {
+                return Failed<bool>(ex.InnerException.Message);
+            }
+        }
+        public async Task<ReturnBase<bool>> Handle(DeleteCartItemCommand request, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var deleteResult = await _cartItemService.DeleteCartItemAsync(request.Id);
+                return deleteResult.Succeeded ? Success(true) : Failed<bool>(deleteResult.Message);
             }
             catch (Exception ex)
             {
