@@ -2,6 +2,7 @@
 using Ecommerce.Infrastructure.Abstracts;
 using Ecommerce.Service.Abstraction;
 using Ecommerce.Shared.Base;
+using Microsoft.EntityFrameworkCore;
 
 namespace Ecommerce.Service.Implementation
 {
@@ -14,6 +15,25 @@ namespace Ecommerce.Service.Implementation
             this._paymentMethodRepository = paymentMethodRepository;
         }
 
+        public async Task<ReturnBase<bool>> ActivatedPaymentMethodAsync(int paymentMethodId)
+        {
+            try
+            {
+                var paymentMethod = await _paymentMethodRepository.GetTableNoTracking().Data.Where(x => x.Id == paymentMethodId).FirstOrDefaultAsync();
+
+                if (paymentMethod is null)
+                    return BadRequest<bool>("payment method is not found");
+
+                paymentMethod.IsActive = true;
+
+                var updateResult = await _paymentMethodRepository.UpdateAsync(paymentMethod);
+                return updateResult.Succeeded ? Success(true) : Failed<bool>(updateResult.Message);
+            }
+            catch (Exception ex)
+            {
+                return Failed<bool>(ex.InnerException.Message);
+            }
+        }
         public async Task<ReturnBase<bool>> AddPaymentMethodAsync(PaymentMethod paymentMethod)
         {
             try
@@ -24,6 +44,25 @@ namespace Ecommerce.Service.Implementation
                 }
                 var addResult = await _paymentMethodRepository.AddAsync(paymentMethod);
                 return addResult.Succeeded ? Success(true) : Failed<bool>(addResult.Message);
+            }
+            catch (Exception ex)
+            {
+                return Failed<bool>(ex.InnerException.Message);
+            }
+        }
+        public async Task<ReturnBase<bool>> DeletePaymentMethodAsync(int paymentMethodId)
+        {
+            try
+            {
+                var paymentMethod = await _paymentMethodRepository.GetTableNoTracking().Data.Where(x => x.Id == paymentMethodId).FirstOrDefaultAsync();
+
+                if (paymentMethod is null)
+                    return BadRequest<bool>("payment method is not found");
+
+                paymentMethod.IsActive = false;
+
+                var updateResult = await _paymentMethodRepository.UpdateAsync(paymentMethod);
+                return updateResult.Succeeded ? Success(true) : Failed<bool>(updateResult.Message);
             }
             catch (Exception ex)
             {

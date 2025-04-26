@@ -22,5 +22,19 @@ namespace Ecommerce.API.Controllers
             var response = await Mediator.Send(command);
             return ReturnResult(response);
         }
+        [HttpDelete]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Delete([FromBody] DeletePaymentMethodCommand command)
+        {
+            var response = await Mediator.Send(command);
+            return ReturnResult(response);
+        }
+        [HttpPut]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Activate([FromBody] ActivatePaymentMethodCommand command)
+        {
+            var response = await Mediator.Send(command);
+            return ReturnResult(response);
+        }
     }
 }

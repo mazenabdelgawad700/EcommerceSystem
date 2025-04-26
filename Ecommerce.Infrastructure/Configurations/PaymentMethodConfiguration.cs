@@ -14,6 +14,10 @@ namespace Ecommerce.Infrastructure.Configurations
                 .IsRequired()
                 .HasMaxLength(50);
 
+            builder.Property(pm => pm.IsActive)
+                .IsRequired()
+                .HasDefaultValue(true);
+
             builder.Property(pm => pm.CreatedAt)
                 .IsRequired();
 
