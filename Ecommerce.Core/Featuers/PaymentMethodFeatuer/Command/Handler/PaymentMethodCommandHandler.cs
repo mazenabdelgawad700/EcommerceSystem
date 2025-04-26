@@ -7,7 +7,9 @@ using MediatR;
 
 namespace Ecommerce.Core.Featuers.PaymentMethodFeatuer.Command.Handler
 {
-    public class PaymentMethodCommandHandler : ReturnBaseHandler, IRequestHandler<AddPaymentMethodCommand, ReturnBase<bool>>
+    public class PaymentMethodCommandHandler : ReturnBaseHandler,
+        IRequestHandler<AddPaymentMethodCommand, ReturnBase<bool>>,
+        IRequestHandler<UpdatePaymentMethodCommand, ReturnBase<bool>>
     {
         private readonly IPaymentMethodService _paymentMethodService;
         private readonly IMapper _mapper;
@@ -26,6 +28,21 @@ namespace Ecommerce.Core.Featuers.PaymentMethodFeatuer.Command.Handler
 
                 var addResult = await _paymentMethodService.AddPaymentMethodAsync(mappedResult);
                 return addResult.Succeeded ? Success(true) : Failed<bool>(addResult.Message);
+            }
+            catch (Exception ex)
+            {
+                return Failed<bool>(ex.InnerException.Message);
+            }
+        }
+
+        public async Task<ReturnBase<bool>> Handle(UpdatePaymentMethodCommand request, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var mappedResult = _mapper.Map<PaymentMethod>(request);
+
+                var updateResult = await _paymentMethodService.UpdatePaymentMethodAsync(mappedResult);
+                return updateResult.Succeeded ? Success(true) : Failed<bool>(updateResult.Message);
             }
             catch (Exception ex)
             {

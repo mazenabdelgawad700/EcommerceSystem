@@ -15,5 +15,12 @@ namespace Ecommerce.API.Controllers
             var response = await Mediator.Send(command);
             return ReturnResult(response);
         }
+        [HttpPut]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Update([FromBody] UpdatePaymentMethodCommand command)
+        {
+            var response = await Mediator.Send(command);
+            return ReturnResult(response);
+        }
     }
 }

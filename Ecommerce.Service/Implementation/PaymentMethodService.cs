@@ -30,5 +30,22 @@ namespace Ecommerce.Service.Implementation
                 return Failed<bool>(ex.InnerException.Message);
             }
         }
+        public async Task<ReturnBase<bool>> UpdatePaymentMethodAsync(PaymentMethod paymentMethod)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(paymentMethod.PaymentMethodName))
+                {
+                    return Failed<bool>("Payment method name is required");
+                }
+                paymentMethod.UpdatedAt = DateTime.UtcNow;
+                var updateResult = await _paymentMethodRepository.UpdateAsync(paymentMethod);
+                return updateResult.Succeeded ? Success(true) : Failed<bool>(updateResult.Message);
+            }
+            catch (Exception ex)
+            {
+                return Failed<bool>(ex.InnerException.Message);
+            }
+        }
     }
 }
