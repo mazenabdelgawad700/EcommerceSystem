@@ -39,8 +39,8 @@ namespace Ecommerce.Service.Implementation
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
-                return Failed<bool>(ex.Message);
+                Console.WriteLine(ex.InnerException.Message);
+                return Failed<bool>(ex.InnerException.Message);
             }
         }
     }

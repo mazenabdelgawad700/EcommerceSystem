@@ -40,7 +40,7 @@ namespace Ecommerce.Service.Implementation
             }
             catch (Exception ex)
             {
-                return Failed<int>(ex.Message);
+                return Failed<int>(ex.InnerException.Message);
             }
         }
         public async Task<ReturnBase<bool>> DeleteProductAsync(Product product)
@@ -55,7 +55,7 @@ namespace Ecommerce.Service.Implementation
             }
             catch (Exception ex)
             {
-                return Failed<bool>(ex.Message);
+                return Failed<bool>(ex.InnerException.Message);
             }
         }
         public async Task<ReturnBase<bool>> SaveProductImagesAsync(IEnumerable<IFormFile> files, int productId)
@@ -89,7 +89,7 @@ namespace Ecommerce.Service.Implementation
             }
             catch (Exception ex)
             {
-                return Failed<int>(ex.Message);
+                return Failed<int>(ex.InnerException.Message);
             }
         }
         public async Task<ReturnBase<bool>> UpdateProductImagesAsync(IEnumerable<IFormFile> files, IEnumerable<string> oldFiles, int productId)

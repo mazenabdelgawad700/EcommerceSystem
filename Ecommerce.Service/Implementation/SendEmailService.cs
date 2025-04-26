@@ -56,7 +56,7 @@ namespace Ecommerce.Service.Implementation
             }
             catch (Exception ex)
             {
-                return Failed<bool>(ex.Message);
+                return Failed<bool>(ex.InnerException.Message);
             }
         }
     }

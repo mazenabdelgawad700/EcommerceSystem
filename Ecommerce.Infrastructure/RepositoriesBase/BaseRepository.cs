@@ -46,7 +46,7 @@ namespace Ecommerce.Infrastructure.RepositoriesBase
             }
             catch (Exception ex)
             {
-                return Failed<bool>(ex.Message);
+                return Failed<bool>(ex.InnerException.Message);
             }
         }
         public async Task<IDbContextTransaction> BeginTransactionAsync()
@@ -72,7 +72,7 @@ namespace Ecommerce.Infrastructure.RepositoriesBase
             }
             catch (Exception ex)
             {
-                return Failed<bool>(ex.Message);
+                return Failed<bool>(ex.InnerException.Message);
             }
         }
         public async Task<ReturnBase<bool>> DeleteRangeAsync(ICollection<T> entities)
@@ -89,7 +89,7 @@ namespace Ecommerce.Infrastructure.RepositoriesBase
             }
             catch (Exception ex)
             {
-                return Failed<bool>(ex.Message);
+                return Failed<bool>(ex.InnerException.Message);
             }
         }
         public async Task<ReturnBase<T>> GetByIdAsync(int id)
@@ -108,7 +108,7 @@ namespace Ecommerce.Infrastructure.RepositoriesBase
             }
             catch (Exception ex)
             {
-                return Failed<T>(ex.Message);
+                return Failed<T>(ex.InnerException.Message);
             }
         }
         public ReturnBase<IQueryable<T>> GetTableAsTracking()
@@ -119,7 +119,7 @@ namespace Ecommerce.Infrastructure.RepositoriesBase
             }
             catch (Exception ex)
             {
-                return Failed<IQueryable<T>>(ex.Message);
+                return Failed<IQueryable<T>>(ex.InnerException.Message);
             }
         }
         public ReturnBase<IQueryable<T>> GetTableNoTracking()
@@ -130,7 +130,7 @@ namespace Ecommerce.Infrastructure.RepositoriesBase
             }
             catch (Exception ex)
             {
-                return Failed<IQueryable<T>>(ex.Message);
+                return Failed<IQueryable<T>>(ex.InnerException.Message);
             }
         }
         public async Task<ReturnBase<bool>> UpdateAsync(T entity)
@@ -156,7 +156,7 @@ namespace Ecommerce.Infrastructure.RepositoriesBase
             }
             catch (Exception ex)
             {
-                return Failed<bool>(ex.Message);
+                return Failed<bool>(ex.InnerException.Message);
             }
         }
         public async Task SaveChangesAsync()
@@ -167,7 +167,7 @@ namespace Ecommerce.Infrastructure.RepositoriesBase
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.InnerException.Message);
             }
         }
         public async Task RollbackAsync()
@@ -178,7 +178,7 @@ namespace Ecommerce.Infrastructure.RepositoriesBase
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.InnerException.Message);
             }
         }
     }

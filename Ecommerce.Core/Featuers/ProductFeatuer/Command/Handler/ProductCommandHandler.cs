@@ -65,7 +65,7 @@ namespace Ecommerce.Core.Featuers.ProductFeatuer.Command.Handler
             catch (Exception ex)
             {
                 await transaction.RollbackAsync();
-                return Failed<bool>(ex.Message);
+                return Failed<bool>(ex.InnerException.Message);
             }
         }
 
@@ -98,7 +98,7 @@ namespace Ecommerce.Core.Featuers.ProductFeatuer.Command.Handler
             catch (Exception ex)
             {
                 await transaction.RollbackAsync();
-                return Failed<bool>(ex.Message);
+                return Failed<bool>(ex.InnerException.Message);
             }
         }
 
@@ -137,7 +137,7 @@ namespace Ecommerce.Core.Featuers.ProductFeatuer.Command.Handler
             catch (Exception ex)
             {
                 await transaction.RollbackAsync();
-                return Failed<bool>(ex.Message);
+                return Failed<bool>(ex.InnerException.Message);
             }
         }
 

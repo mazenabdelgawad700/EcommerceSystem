@@ -30,7 +30,7 @@ namespace Ecommerce.Service.Implementation
             }
             catch (Exception ex)
             {
-                return Failed<bool>(ex.Message);
+                return Failed<bool>(ex.InnerException.Message);
             }
         }
         public async Task<ReturnBase<bool>> CheckProductInInventoryAsync(int productId, int quantity)
@@ -47,7 +47,7 @@ namespace Ecommerce.Service.Implementation
             }
             catch (Exception ex)
             {
-                return Failed<bool>(ex.Message);
+                return Failed<bool>(ex.InnerException.Message);
             }
         }
         public async Task<ReturnBase<bool>> DeleteProductFromInventoryAsync(int productId)

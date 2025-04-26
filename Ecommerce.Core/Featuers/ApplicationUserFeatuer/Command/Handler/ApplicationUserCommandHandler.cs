@@ -43,7 +43,7 @@ namespace Ecommerce.Core.Featuers.ApplicationUserFeatuer.Command.Handler
             }
             catch (Exception ex)
             {
-                return Failed<bool>(ex.Message);
+                return Failed<bool>(ex.InnerException.Message);
             }
         }
         public async Task<ReturnBase<bool>> Handle(ConfirmEmailCommand request, CancellationToken cancellationToken)
@@ -60,7 +60,7 @@ namespace Ecommerce.Core.Featuers.ApplicationUserFeatuer.Command.Handler
             }
             catch (Exception ex)
             {
-                return Failed<bool>(ex.Message);
+                return Failed<bool>(ex.InnerException.Message);
             }
         }
         public async Task<ReturnBase<string>> Handle(LoginApplicationUserCommand request, CancellationToken cancellationToken)
@@ -76,7 +76,7 @@ namespace Ecommerce.Core.Featuers.ApplicationUserFeatuer.Command.Handler
             }
             catch (Exception ex)
             {
-                return Failed<string>(ex.Message);
+                return Failed<string>(ex.InnerException.Message);
             }
         }
         public async Task<ReturnBase<string>> Handle(RefreshTokenCommand request, CancellationToken cancellationToken)
@@ -92,7 +92,7 @@ namespace Ecommerce.Core.Featuers.ApplicationUserFeatuer.Command.Handler
             }
             catch (Exception ex)
             {
-                return Failed<string>(ex.Message);
+                return Failed<string>(ex.InnerException.Message);
             }
         }
 
@@ -109,7 +109,7 @@ namespace Ecommerce.Core.Featuers.ApplicationUserFeatuer.Command.Handler
             }
             catch (Exception ex)
             {
-                return Failed<bool>(ex.Message);
+                return Failed<bool>(ex.InnerException.Message);
             }
         }
         public async Task<ReturnBase<bool>> Handle(SendResetPasswordEmailCommand request, CancellationToken cancellationToken)
@@ -125,7 +125,7 @@ namespace Ecommerce.Core.Featuers.ApplicationUserFeatuer.Command.Handler
             }
             catch (Exception ex)
             {
-                return Failed<bool>(ex.Message);
+                return Failed<bool>(ex.InnerException.Message);
             }
         }
         public async Task<ReturnBase<bool>> Handle(ChangePasswordCommand request, CancellationToken cancellationToken)
@@ -141,7 +141,7 @@ namespace Ecommerce.Core.Featuers.ApplicationUserFeatuer.Command.Handler
             }
             catch (Exception ex)
             {
-                return Failed<bool>(ex.Message);
+                return Failed<bool>(ex.InnerException.Message);
             }
         }
         public async Task<ReturnBase<bool>> Handle(UpdateApplicationUserCommand request, CancellationToken cancellationToken)
@@ -157,7 +157,7 @@ namespace Ecommerce.Core.Featuers.ApplicationUserFeatuer.Command.Handler
             }
             catch (Exception ex)
             {
-                return Failed<bool>(ex.Message);
+                return Failed<bool>(ex.InnerException.Message);
             }
         }
     }

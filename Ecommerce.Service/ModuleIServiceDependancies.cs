@@ -21,6 +21,7 @@ namespace Ecommerce.Infrastructure
             services.AddTransient<IShippingAddressesService, ShippingAddressesService>();
             services.AddTransient<IOrderService, OrderService>();
             services.AddTransient<IOrderItemService, OrderItemService>();
+            services.AddTransient<ITransactionService, TransactionService>();
             return services;
         }
     }

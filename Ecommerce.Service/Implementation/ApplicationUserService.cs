@@ -142,7 +142,7 @@ namespace Ecommerce.Service.Implementation
             }
             catch (Exception ex)
             {
-                return Failed<string>(ex.Message);
+                return Failed<string>(ex.InnerException.Message);
             }
         }
         private async Task<string> GenerateJwtToken(ApplicationUser user, string jwtId)
@@ -285,7 +285,7 @@ namespace Ecommerce.Service.Implementation
             }
             catch (Exception ex)
             {
-                return Failed<string>(ex.Message);
+                return Failed<string>(ex.InnerException.Message);
             }
         }
         private string? GetJwtIdFromToken(string token)
@@ -340,7 +340,7 @@ namespace Ecommerce.Service.Implementation
             }
             catch (Exception ex)
             {
-                return Failed<bool>(ex.Message);
+                return Failed<bool>(ex.InnerException.Message);
             }
         }
         public async Task<ReturnBase<bool>> ResetPasswordAsync(string resetPasswordToken, string newPassword, string email)
@@ -366,7 +366,7 @@ namespace Ecommerce.Service.Implementation
             }
             catch (Exception ex)
             {
-                return Failed<bool>(ex.Message);
+                return Failed<bool>(ex.InnerException.Message);
             }
         }
         public async Task<ReturnBase<bool>> ChangePasswordAsync(string userId, string currentPassword, string newPassword)
@@ -405,7 +405,7 @@ namespace Ecommerce.Service.Implementation
             catch (Exception ex)
             {
                 await transaction.RollbackAsync();
-                return Failed<bool>(ex.Message);
+                return Failed<bool>(ex.InnerException.Message);
             }
         }
         public async Task<ReturnBase<bool>> UpdateApplicationUserAsync(string userId, string newEmail)
@@ -443,7 +443,7 @@ namespace Ecommerce.Service.Implementation
             }
             catch (Exception ex)
             {
-                return Failed<bool>(ex.Message);
+                return Failed<bool>(ex.InnerException.Message);
             }
         }
     }
