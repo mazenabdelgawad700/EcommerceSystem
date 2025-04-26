@@ -9,5 +9,7 @@ namespace Ecommerce.Service.Abstraction
         Task<ReturnBase<bool>> UpdatePaymentMethodAsync(PaymentMethod paymentMethod);
         Task<ReturnBase<bool>> DeletePaymentMethodAsync(int paymentMethodId);
         Task<ReturnBase<bool>> ActivatedPaymentMethodAsync(int paymentMethodId);
+        ReturnBase<IQueryable<PaymentMethod>> GetPaymentMethods(bool? active = null);
+        ReturnBase<IQueryable<PaymentMethod>> GetActivePaymentMethods();
     }
 }

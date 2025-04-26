@@ -60,6 +60,7 @@ namespace Ecommerce.Service.Implementation
                     return BadRequest<bool>("payment method is not found");
 
                 paymentMethod.IsActive = false;
+                paymentMethod.UpdatedAt = DateTime.UtcNow;
 
                 var updateResult = await _paymentMethodRepository.UpdateAsync(paymentMethod);
                 return updateResult.Succeeded ? Success(true) : Failed<bool>(updateResult.Message);
@@ -67,6 +68,39 @@ namespace Ecommerce.Service.Implementation
             catch (Exception ex)
             {
                 return Failed<bool>(ex.InnerException.Message);
+            }
+        }
+
+        public ReturnBase<IQueryable<PaymentMethod>> GetActivePaymentMethods()
+        {
+            try
+            {
+                var paymentMethods = _paymentMethodRepository.GetTableNoTracking()
+                    .Data.AsQueryable().Where(x => x.IsActive);
+
+                return paymentMethods is not null ? Success(paymentMethods) : Failed<IQueryable<PaymentMethod>>("");
+            }
+            catch (Exception ex)
+            {
+                return Failed<IQueryable<PaymentMethod>>(ex.InnerException.Message);
+            }
+        }
+
+        public ReturnBase<IQueryable<PaymentMethod>> GetPaymentMethods(bool? active = null)
+        {
+            try
+            {
+                var paymentMethods = _paymentMethodRepository.GetTableNoTracking()
+                    .Data.AsQueryable();
+
+                if (active is not null)
+                    paymentMethods = paymentMethods.Where(x => x.IsActive == active);
+
+                return paymentMethods is not null ? Success(paymentMethods) : Failed<IQueryable<PaymentMethod>>("");
+            }
+            catch (Exception ex)
+            {
+                return Failed<IQueryable<PaymentMethod>>(ex.InnerException.Message);
             }
         }
         public async Task<ReturnBase<bool>> UpdatePaymentMethodAsync(PaymentMethod paymentMethod)
