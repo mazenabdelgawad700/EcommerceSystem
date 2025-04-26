@@ -1,9 +1,11 @@
 ﻿using Ecommerce.Shared.Enums;
+using System.ComponentModel.DataAnnotations;
 
 namespace Ecommerce.Domain.Entities
 {
     public class ShippingAddress
     {
+        [Key]
         public int Id { get; set; }
         public string UserId { get; set; } = null!;
         public ApplicationUser User { get; set; }

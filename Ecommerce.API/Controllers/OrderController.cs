@@ -21,8 +21,15 @@ namespace Ecommerce.API.Controllers
             if (command.UserId != userIdFromToken)
                 return Unauthorized("You are not allowed to perform this action");
 
-            ReturnBase<bool> response = await Mediator.Send(command);
+            var response = await Mediator.Send(command);
 
+            return ReturnResult(response);
+        }
+        [HttpPut]
+        [Authorize]
+        public async Task<IActionResult> AddTotalPrice([FromBody] AddTotalPriceToOrderCommand command)
+        {
+            ReturnBase<bool> response = await Mediator.Send(command);
             return ReturnResult(response);
         }
     }

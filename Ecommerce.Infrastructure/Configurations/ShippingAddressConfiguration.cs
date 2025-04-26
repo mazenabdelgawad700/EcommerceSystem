@@ -8,7 +8,7 @@ namespace Ecommerce.Infrastructure.Configurations
     {
         public void Configure(EntityTypeBuilder<ShippingAddress> builder)
         {
-            builder.HasKey(sa => sa.Id);  // Changed to use the new Id property
+            builder.HasKey(sa => sa.Id);
 
             builder.Property(sa => sa.UserId)
                 .IsRequired();

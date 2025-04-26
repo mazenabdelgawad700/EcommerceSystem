@@ -17,7 +17,6 @@ namespace Ecommerce.Infrastructure.Configurations
                 .IsRequired();
 
             builder.Property(o => o.TotalPrice)
-                .IsRequired()
                 .HasPrecision(10, 2);
 
             builder.Property(o => o.PlacedAt)

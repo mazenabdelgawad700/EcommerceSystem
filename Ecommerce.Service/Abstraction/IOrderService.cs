@@ -5,6 +5,7 @@ namespace Ecommerce.Service.Abstraction
 {
     public interface IOrderService
     {
-        Task<ReturnBase<bool>> AddOrderAsync(Order order);
+        Task<ReturnBase<int>> AddOrderAsync(Order order);
+        Task<ReturnBase<bool>> AddTotalPriceToOrderAsync(int orderId, decimal totalPrice);
     }
 }
