@@ -18,6 +18,7 @@ namespace Ecommerce.Infrastructure
             services.AddTransient<ICartService, CartService>();
             services.AddTransient<ICartItemService, CartItemService>();
             services.AddTransient<IPaymentMethodService, PaymentMethodService>();
+            services.AddTransient<IShippingAddressesService, ShippingAddressesService>();
             return services;
         }
     }

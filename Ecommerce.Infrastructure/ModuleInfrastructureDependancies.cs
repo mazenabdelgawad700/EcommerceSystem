@@ -15,6 +15,7 @@ namespace Ecommerce.Infrastructure
             services.AddTransient<ICartRepository, CartRepository>();
             services.AddTransient<ICartItemRepository, CartItemRepository>();
             services.AddTransient<IPaymentMethodRepository, PaymentMethodRepository>();
+            services.AddTransient<IShippingAddressesRepository, ShippingAddressesRepository>();
             return services;
         }
     }
