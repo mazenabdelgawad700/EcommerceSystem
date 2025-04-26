@@ -20,6 +20,7 @@ namespace Ecommerce.Infrastructure
             services.AddTransient<IPaymentMethodService, PaymentMethodService>();
             services.AddTransient<IShippingAddressesService, ShippingAddressesService>();
             services.AddTransient<IOrderService, OrderService>();
+            services.AddTransient<IOrderItemService, OrderItemService>();
             return services;
         }
     }
