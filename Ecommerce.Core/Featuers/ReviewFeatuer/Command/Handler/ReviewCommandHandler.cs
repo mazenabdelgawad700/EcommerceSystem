@@ -8,7 +8,8 @@ using MediatR;
 namespace Ecommerce.Core.Featuers.ReviewFeatuer.Command.Handler
 {
     public class ReviewCommandHandler : ReturnBaseHandler,
-        IRequestHandler<AddReviewCommand, ReturnBase<bool>>
+        IRequestHandler<AddReviewCommand, ReturnBase<bool>>,
+        IRequestHandler<DeleteReviewCommand, ReturnBase<bool>>
     {
         private readonly IReviewService _reviewService;
         private readonly IMapper _mapper;
@@ -29,6 +30,19 @@ namespace Ecommerce.Core.Featuers.ReviewFeatuer.Command.Handler
                 var mappedResult = _mapper.Map<Review>(request);
                 var addResult = await _reviewService.AddReviewAsync(mappedResult);
                 return addResult.Succeeded ? Success(true) : Failed<bool>(addResult.Message);
+            }
+            catch (Exception ex)
+            {
+                return Failed<bool>(ex.InnerException.Message);
+            }
+        }
+
+        public async Task<ReturnBase<bool>> Handle(DeleteReviewCommand request, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var deleteResult = await _reviewService.DeleteReviewAsync(request.Id);
+                return deleteResult.Succeeded ? Success(true) : Failed<bool>(deleteResult.Message);
             }
             catch (Exception ex)
             {

@@ -25,5 +25,13 @@ namespace Ecommerce.API.Controllers
 
             return ReturnResult(response);
         }
+
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> Delete([FromQuery] DeleteReviewCommand command)
+        {
+            ReturnBase<bool> response = await Mediator.Send(command);
+            return ReturnResult(response);
+        }
     }
 }

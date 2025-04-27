@@ -26,5 +26,18 @@ namespace Ecommerce.Service.Implementation
                 return Failed<bool>(ex.InnerException.Message);
             }
         }
+
+        public async Task<ReturnBase<bool>> DeleteReviewAsync(int reviewId)
+        {
+            try
+            {
+                var deleteResult = await _reviewRepository.DeleteAsync(reviewId);
+                return deleteResult.Succeeded ? Success(true) : Failed<bool>(deleteResult.Message);
+            }
+            catch (Exception ex)
+            {
+                return Failed<bool>(ex.InnerException.Message);
+            }
+        }
     }
 }
