@@ -8,5 +8,6 @@ namespace Ecommerce.Service.Abstraction
         Task<ReturnBase<bool>> AddBrandAsync(Brand brand);
         Task<ReturnBase<bool>> UpdateBrandAsync(Brand brand);
         Task<ReturnBase<bool>> DeleteBrandAsync(int brandId);
+        ReturnBase<IQueryable<Product>> GetBrandProducts(int brandId);
     }
 }

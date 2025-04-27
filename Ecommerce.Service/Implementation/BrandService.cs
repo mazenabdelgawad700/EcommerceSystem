@@ -46,6 +46,19 @@ namespace Ecommerce.Service.Implementation
                 return Failed<bool>(ex.InnerException.Message);
             }
         }
+        public ReturnBase<IQueryable<Product>> GetBrandProducts(int brandId)
+        {
+            try
+            {
+                var products = _productRepository.GetTableNoTracking().Data.Where(x => x.BrandId == brandId).AsQueryable();
+
+                return products is not null ? Success(products) : Failed<IQueryable<Product>>("Can not get products");
+            }
+            catch (Exception ex)
+            {
+                return Failed<IQueryable<Product>>(ex.InnerException.Message);
+            }
+        }
         public async Task<ReturnBase<bool>> UpdateBrandAsync(Brand brand)
         {
             try
