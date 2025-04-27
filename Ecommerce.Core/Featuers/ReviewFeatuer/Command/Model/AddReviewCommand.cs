@@ -8,6 +8,6 @@ namespace Ecommerce.Core.Featuers.ReviewFeatuer.Command.Model
         public string UserId { get; set; }
         public int ProductId { get; set; }
         public string Comment { get; set; }
-        public byte Rate { get; set; }
+        public byte Rating { get; set; }
     }
 }

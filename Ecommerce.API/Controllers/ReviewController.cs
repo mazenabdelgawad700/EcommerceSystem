@@ -1,5 +1,6 @@
 ﻿using Ecommerce.API.Base;
 using Ecommerce.Core.Featuers.ReviewFeatuer.Command.Model;
+using Ecommerce.Service.Abstraction.Model;
 using Ecommerce.Shared.Base;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -31,6 +32,14 @@ namespace Ecommerce.API.Controllers
         public async Task<IActionResult> Delete([FromQuery] DeleteReviewCommand command)
         {
             ReturnBase<bool> response = await Mediator.Send(command);
+            return ReturnResult(response);
+        }
+
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> GetProductReviews([FromQuery] GetProductReviewsQuery query)
+        {
+            var response = await Mediator.Send(query);
             return ReturnResult(response);
         }
     }

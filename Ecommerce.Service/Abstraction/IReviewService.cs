@@ -7,5 +7,6 @@ namespace Ecommerce.Service.Abstraction
     {
         Task<ReturnBase<bool>> AddReviewAsync(Review review);
         Task<ReturnBase<bool>> DeleteReviewAsync(int reviewId);
+        ReturnBase<IQueryable<Review>> GetProductReviewsAsync(int productId);
     }
 }

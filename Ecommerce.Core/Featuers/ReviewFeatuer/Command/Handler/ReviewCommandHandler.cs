@@ -24,7 +24,7 @@ namespace Ecommerce.Core.Featuers.ReviewFeatuer.Command.Handler
         {
             try
             {
-                if (request.Rate < 0 || request.Rate > 5)
+                if (request.Rating < 0 || request.Rating > 5)
                     return BadRequest<bool>("Invlaid rate Value");
 
                 var mappedResult = _mapper.Map<Review>(request);

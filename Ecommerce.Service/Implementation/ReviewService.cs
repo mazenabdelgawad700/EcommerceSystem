@@ -39,5 +39,18 @@ namespace Ecommerce.Service.Implementation
                 return Failed<bool>(ex.InnerException.Message);
             }
         }
+        public ReturnBase<IQueryable<Review>> GetProductReviewsAsync(int productId)
+        {
+            try
+            {
+                var getProductReviewsResult = _reviewRepository.GetTableNoTracking().Data.Where(x => x.ProductId == productId).AsQueryable();
+
+                return getProductReviewsResult is not null ? Success(getProductReviewsResult) : Failed<IQueryable<Review>>("Can not get product reviews");
+            }
+            catch (Exception ex)
+            {
+                return Failed<IQueryable<Review>>(ex.InnerException.Message);
+            }
+        }
     }
 }
