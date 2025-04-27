@@ -70,7 +70,6 @@ namespace Ecommerce.Service.Implementation
                 return Failed<bool>(ex.InnerException.Message);
             }
         }
-
         public ReturnBase<IQueryable<PaymentMethod>> GetActivePaymentMethods()
         {
             try
@@ -85,7 +84,6 @@ namespace Ecommerce.Service.Implementation
                 return Failed<IQueryable<PaymentMethod>>(ex.InnerException.Message);
             }
         }
-
         public ReturnBase<IQueryable<PaymentMethod>> GetPaymentMethods(bool? active = null)
         {
             try

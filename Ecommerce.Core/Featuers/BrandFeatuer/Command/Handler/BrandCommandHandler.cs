@@ -9,7 +9,8 @@ namespace Ecommerce.Core.Featuers.BrandFeatuer.Command.Handler
 {
     internal class BrandCommandHandler : ReturnBaseHandler,
         IRequestHandler<AddBrandCommand, ReturnBase<bool>>,
-        IRequestHandler<UpdateBrandCommand, ReturnBase<bool>>
+        IRequestHandler<UpdateBrandCommand, ReturnBase<bool>>,
+        IRequestHandler<DeleteBrandCommand, ReturnBase<bool>>
     {
         private readonly IImageService _imageService;
         private readonly IBrandService _brandService;
@@ -108,6 +109,18 @@ namespace Ecommerce.Core.Featuers.BrandFeatuer.Command.Handler
                 return Failed<bool>(ex.InnerException.Message);
             }
 
+        }
+        public async Task<ReturnBase<bool>> Handle(DeleteBrandCommand request, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var deleteResult = await _brandService.DeleteBrandAsync(request.Id);
+                return deleteResult.Succeeded ? Success(true) : Failed<bool>(deleteResult.Message);
+            }
+            catch (Exception ex)
+            {
+                return Failed<bool>(ex.InnerException.Message);
+            }
         }
     }
 }
