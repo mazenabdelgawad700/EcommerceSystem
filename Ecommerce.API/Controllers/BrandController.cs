@@ -16,5 +16,12 @@ namespace Ecommerce.API.Controllers
             ReturnBase<bool> response = await Mediator.Send(command);
             return ReturnResult(response);
         }
+        [HttpPut]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Update([FromForm] UpdateBrandCommand command)
+        {
+            ReturnBase<bool> response = await Mediator.Send(command);
+            return ReturnResult(response);
+        }
     }
 }

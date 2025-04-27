@@ -6,5 +6,6 @@ namespace Ecommerce.Service.Abstraction
     public interface IBrandService
     {
         Task<ReturnBase<bool>> AddBrandAsync(Brand brand);
+        Task<ReturnBase<bool>> UpdateBrandAsync(Brand brand);
     }
 }

@@ -26,5 +26,17 @@ namespace Ecommerce.Service.Implementation
                 return Failed<bool>(ex.InnerException.Message);
             }
         }
+        public async Task<ReturnBase<bool>> UpdateBrandAsync(Brand brand)
+        {
+            try
+            {
+                var updateBrandResult = await _brandRepositorIy.UpdateAsync(brand);
+                return updateBrandResult.Succeeded ? Success(true) : Failed<bool>(updateBrandResult.Message);
+            }
+            catch (Exception ex)
+            {
+                return Failed<bool>(ex.InnerException.Message);
+            }
+        }
     }
 }
