@@ -8,5 +8,6 @@ namespace Ecommerce.Service.Abstraction
         Task<ReturnBase<bool>> AddCategoryAsync(Category category);
         Task<ReturnBase<bool>> UpdateCategoryAsync(Category category);
         Task<ReturnBase<bool>> DeleteCategoryAsync(int categoryId);
+        ReturnBase<IQueryable<Product>> GetCategoryProductsAsync(int categoryId);
     }
 }

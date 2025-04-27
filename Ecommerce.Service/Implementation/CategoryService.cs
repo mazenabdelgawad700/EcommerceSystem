@@ -8,10 +8,12 @@ namespace Ecommerce.Service.Implementation
     internal class CategoryService : ReturnBaseHandler, ICategoryService
     {
         private readonly ICategoryRepository _categoryRepository;
+        private readonly IProductRepository _productRepository;
 
-        public CategoryService(ICategoryRepository categoryRepository)
+        public CategoryService(ICategoryRepository categoryRepository, IProductRepository productRepository)
         {
             this._categoryRepository = categoryRepository;
+            _productRepository = productRepository;
         }
 
         public async Task<ReturnBase<bool>> AddCategoryAsync(Category category)
@@ -38,7 +40,19 @@ namespace Ecommerce.Service.Implementation
                 return Failed<bool>(ex.InnerException.Message);
             }
         }
+        public ReturnBase<IQueryable<Product>> GetCategoryProductsAsync(int categoryId)
+        {
+            try
+            {
+                var products = _productRepository.GetTableNoTracking().Data.Where(x => x.CategoryId == categoryId).AsQueryable();
 
+                return products is not null ? Success(products) : Failed<IQueryable<Product>>("Can not get products, please try again");
+            }
+            catch (Exception ex)
+            {
+                return Failed<IQueryable<Product>>(ex.InnerException.Message);
+            }
+        }
         public async Task<ReturnBase<bool>> UpdateCategoryAsync(Category category)
         {
             try

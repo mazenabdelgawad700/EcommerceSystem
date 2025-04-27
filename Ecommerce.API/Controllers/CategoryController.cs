@@ -1,5 +1,6 @@
 ﻿using Ecommerce.API.Base;
 using Ecommerce.Core.Featuers.CategoryFeatuer.Command.Model;
+using Ecommerce.Core.Featuers.CategoryFeatuer.Query.Model;
 using Ecommerce.Shared.Base;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -28,6 +29,13 @@ namespace Ecommerce.API.Controllers
         public async Task<IActionResult> Update([FromBody] UpdateCategoryCommand command)
         {
             ReturnBase<bool> response = await Mediator.Send(command);
+            return ReturnResult(response);
+        }
+        [HttpGet]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> GetCategoryProducts([FromQuery] GetCategoryProductsQuery query)
+        {
+            var response = await Mediator.Send(query);
             return ReturnResult(response);
         }
     }
