@@ -9,7 +9,8 @@ namespace Ecommerce.Core.Featuers.CategoryFeatuer.Command.Handler
 {
     internal class CategoryCommandHandler : ReturnBaseHandler,
         IRequestHandler<AddCategoryCommand, ReturnBase<bool>>,
-        IRequestHandler<DeleteCategoryCommand, ReturnBase<bool>>
+        IRequestHandler<DeleteCategoryCommand, ReturnBase<bool>>,
+        IRequestHandler<UpdateCategoryCommand, ReturnBase<bool>>
     {
         private readonly ICategoryService _categoryService;
         private readonly IMapper _mapper;
@@ -38,8 +39,22 @@ namespace Ecommerce.Core.Featuers.CategoryFeatuer.Command.Handler
         {
             try
             {
-                var addResult = await _categoryService.DeleteCategoryAsync(request.Id);
-                return addResult.Succeeded ? Success(true) : Failed<bool>(addResult.Message);
+                var deleteResult = await _categoryService.DeleteCategoryAsync(request.Id);
+                return deleteResult.Succeeded ? Success(true) : Failed<bool>(deleteResult.Message);
+            }
+            catch (Exception ex)
+            {
+                return Failed<bool>(ex.InnerException.Message);
+            }
+        }
+
+        public async Task<ReturnBase<bool>> Handle(UpdateCategoryCommand request, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var mappedResult = _mapper.Map<Category>(request);
+                var updateResult = await _categoryService.UpdateCategoryAsync(mappedResult);
+                return updateResult.Succeeded ? Success(true) : Failed<bool>(updateResult.Message);
             }
             catch (Exception ex)
             {

@@ -30,8 +30,21 @@ namespace Ecommerce.Service.Implementation
         {
             try
             {
-                var addResult = await _categoryRepository.DeleteAsync(categoryId);
-                return addResult.Succeeded ? Success(true) : Failed<bool>(addResult.Message);
+                var deleteResult = await _categoryRepository.DeleteAsync(categoryId);
+                return deleteResult.Succeeded ? Success(true) : Failed<bool>(deleteResult.Message);
+            }
+            catch (Exception ex)
+            {
+                return Failed<bool>(ex.InnerException.Message);
+            }
+        }
+
+        public async Task<ReturnBase<bool>> UpdateCategoryAsync(Category category)
+        {
+            try
+            {
+                var updateResult = await _categoryRepository.UpdateAsync(category);
+                return updateResult.Succeeded ? Success(true) : Failed<bool>(updateResult.Message);
             }
             catch (Exception ex)
             {
