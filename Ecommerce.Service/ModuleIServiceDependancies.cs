@@ -23,6 +23,7 @@ namespace Ecommerce.Infrastructure
             services.AddTransient<IOrderItemService, OrderItemService>();
             services.AddTransient<ITransactionService, TransactionService>();
             services.AddTransient<IReviewService, ReviewService>();
+            services.AddTransient<IBrandService, BrandService>();
             return services;
         }
     }

@@ -21,6 +21,7 @@ namespace Ecommerce.Infrastructure
             services.AddTransient<ITransactionRepository, TransactionRepository>();
             services.AddTransient<IApplicationUserRepository, ApplicationUserRepository>();
             services.AddTransient<IReviewRepository, ReviewRepository>();
+            services.AddTransient<IBrandRepository, BrandRepository>();
             return services;
         }
     }
