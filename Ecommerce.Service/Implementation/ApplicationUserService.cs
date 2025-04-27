@@ -1,5 +1,6 @@
 ﻿using Ecommerce.Domain.Entities;
 using Ecommerce.Domain.Helpers;
+using Ecommerce.Infrastructure.Abstracts;
 using Ecommerce.Infrastructure.Context;
 using Ecommerce.Service.Abstraction;
 using Ecommerce.Shared.Base;
@@ -29,10 +30,11 @@ namespace Ecommerce.Service.Implementation
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly ISendPasswordChangeNotificationEmailService
            _sendPasswordChangeNotificationEmailService;
+        private readonly IApplicationUserRepository _applicationUserRepository;
 
 
         public ApplicationUserService(UserManager<ApplicationUser> userManager, IConfirmEmailService confirmEmailService, JwtSettings jwtSettings, AppDbContext dbContext, IHttpContextAccessor httpContextAccessor, ISendEmailService emailService, SignInManager<ApplicationUser> signInManager, ISendPasswordChangeNotificationEmailService
-           sendPasswordChangeNotificationEmailService)
+           sendPasswordChangeNotificationEmailService, IApplicationUserRepository applicationUserRepository)
         {
             this._userManager = userManager;
             this._confirmEmailService = confirmEmailService;
@@ -42,6 +44,7 @@ namespace Ecommerce.Service.Implementation
             this._emailService = emailService;
             this._signInManager = signInManager;
             this._sendPasswordChangeNotificationEmailService = sendPasswordChangeNotificationEmailService;
+            this._applicationUserRepository = applicationUserRepository;
         }
         private bool ValidatePassword(string password)
         {
@@ -444,6 +447,18 @@ namespace Ecommerce.Service.Implementation
             catch (Exception ex)
             {
                 return Failed<bool>(ex.InnerException.Message);
+            }
+        }
+        public async Task<ReturnBase<ApplicationUser>> GetApplicationUserByIdAsync(string userId)
+        {
+            try
+            {
+                var getUserResult = await _applicationUserRepository.GetApplicationUserByIdAsync(userId);
+                return getUserResult.Succeeded ? Success(getUserResult.Data) : Failed<ApplicationUser>(getUserResult.Message);
+            }
+            catch (Exception ex)
+            {
+                return Failed<ApplicationUser>(ex.InnerException.Message);
             }
         }
     }

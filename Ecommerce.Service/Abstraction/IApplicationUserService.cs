@@ -12,6 +12,7 @@ namespace Ecommerce.Service.Abstraction
         Task<ReturnBase<bool>> SendResetPasswordEmailAsync(string email);
         Task<ReturnBase<bool>> ResetPasswordAsync(string resetPasswordToken, string newPassword, string email);
         Task<ReturnBase<bool>> ChangePasswordAsync(string userId, string currentPassword, string newPassword);
+        Task<ReturnBase<ApplicationUser>> GetApplicationUserByIdAsync(string userId);
         Task<ReturnBase<bool>> UpdateApplicationUserAsync(string userId, string newEmail);
     }
 }

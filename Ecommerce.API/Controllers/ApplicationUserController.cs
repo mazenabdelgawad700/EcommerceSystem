@@ -1,5 +1,6 @@
 ﻿using Ecommerce.API.Base;
 using Ecommerce.Core.Featuers.ApplicationUserFeatuer.Command.Model;
+using Ecommerce.Core.Featuers.ApplicationUserFeatuer.Query.Model;
 using Ecommerce.Shared.Base;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -78,6 +79,21 @@ namespace Ecommerce.API.Controllers
                 return Unauthorized("You are not allowed to perform this action");
 
             ReturnBase<bool> response = await Mediator.Send(command);
+            return ReturnResult(response);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetById([FromQuery] GetApplicationUserByIdQuery query)
+        {
+            string? userIdFromToken = User.FindFirst("UserId")?.Value;
+
+            if (userIdFromToken is null)
+                return Unauthorized("Invalid Token");
+
+            if (query.Id != userIdFromToken)
+                return Unauthorized("You are not allowed to perform this action");
+
+            var response = await Mediator.Send(query);
             return ReturnResult(response);
         }
 
